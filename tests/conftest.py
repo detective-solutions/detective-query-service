@@ -2,7 +2,7 @@
 import pytest
 
 # import project related modules
-from detective_query_service.connectors.sql.my_sql import MySQLConnector
+from src.detective_query_service.connectors.sql.my_sql import MySQLConnector
 
 
 @pytest.fixture(scope="session")
@@ -23,4 +23,4 @@ def mysql_test_connection():
         database="sql11466052"
     )
 
-    return connection
+    yield connection

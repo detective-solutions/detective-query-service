@@ -1,12 +1,9 @@
-# import project related modules
-from detective_query_service.tests.conftest import mysql_test_connection
+
+def test_create_connection(mysql_test_connection):
+    assert not mysql_test_connection.connection.closed, "connection cannot be established"
 
 
-def test_create_connection(self, mysql_test_connection):
-    self.assertTrue(mysql_test_connection.connection.is_connected(), True)
-
-
-def test_execute_query_with_restricted_values(self, mysql_test_connection):
+def test_execute_query_with_restricted_values(mysql_test_connection):
     queries = [
         "CREATE DATABASE",
         "DROP TABLE IF EXISTS 'students'",
@@ -17,14 +14,15 @@ def test_execute_query_with_restricted_values(self, mysql_test_connection):
     ]
 
     results = list()
+    expected_result = [("error", "query tries to create, alter, show or use sys information")]
     for query in queries:
-        status = "error" == mysql_test_connection.execute_query(query)[0][0]
+        status = expected_result == mysql_test_connection.execute_query(query)
         results.append(status)
 
-    self.assertTrue(all(results))
+    assert all(results), "query with restricted values can be executed"
 
 
-def test_execute_query_with_legitimate_values(self, mysql_test_connection):
+def test_execute_query_with_legitimate_values(mysql_test_connection):
     queries = [
         "SELECT * FROM students LIMIT 1"
     ]
@@ -38,4 +36,4 @@ def test_execute_query_with_legitimate_values(self, mysql_test_connection):
 
         results.append(status)
 
-    self.assertTrue(all(results))
+    assert all(results), "not all executable queries executed successfully"

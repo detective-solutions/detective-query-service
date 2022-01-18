@@ -8,7 +8,7 @@ class UninitializedAttributeError(Exception):
 
 class Connector:
 
-    def __init__(self, host: str, user: str, password: str, database: str, port: str):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int):
         self.host = host
         self.port = port
         self.user = user

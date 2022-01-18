@@ -1,8 +1,8 @@
 # import standard modules
 from typing import List, Any, Tuple
 # import third party modules
-import mysql.connector
-from mysql.connector.errors import DatabaseError
+from sqlalchemy import text
+from sqlalchemy import create_engine
 
 # import project related modules
 from ..general.connection import Connector
@@ -10,21 +10,19 @@ from ..general.connection import Connector
 
 class MySQLConnector(Connector):
 
-    def __init__(self, host: str, user: str, password: str, database: str, port: str = "3306"):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int = 3306):
         super().__init__(host, user, password, database, port)
 
     def create_connection(self) -> bool:
         try:
-            self.connection = mysql.connector.connect(
-                host=self.host,
-                user=self.user,
-                password=self.password,
-                database=self.database,
-                port=self.port
+            engine = create_engine(
+                f"mysql://{self.user}:{self.password}@{self.host}/{self.database}",
+                echo=True
             )
+            self.connection = engine.connect()
             return True
 
-        except DatabaseError as db_exception:
+        except Exception as db_exception:
             self.__error_status = str(db_exception)
             print(self.__error_status)
             return False
@@ -35,11 +33,10 @@ class MySQLConnector(Connector):
                 return [("error", "query tries to create, alter, show or use sys information")]
 
             else:
-                self.ensure_connection()
-                cursor = self.connection.cursor()
-                cursor.execute(f'''{query}''')
-                result = cursor.fetchall()
 
+                self.ensure_connection()
+                t = text(f'''{query}''')
+                result = self.connection.execute(t).fetchall()
                 if type(result) == list:
                     return result
                 else:
@@ -49,7 +46,7 @@ class MySQLConnector(Connector):
             return [("error", str(db_exception))]
 
     def query_restriction(self, query: str) -> bool:
-        keywords = ["create", "alter", "show", "sys", "drop", "mysdql", "insert"]
+        keywords = ["create", "alter", "show", "sys", "drop", "mysql", "insert"]
         query_keywords = query.lower().replace(".", " ").split(" ")
-        to_restrict = 6 > len(set(keywords) - set(query_keywords))
+        to_restrict = 7 > len(set(keywords) - set(query_keywords))
         return to_restrict

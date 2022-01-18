@@ -9,7 +9,7 @@ testpahts = [
 ]
 
 [tool.mypy]
-mypy_path = "src/detective_query_service"
+mypy_path = "src"
 check_untyped_defs = true
 disallow_any_generics = false
 ignore_missing_imports = true
