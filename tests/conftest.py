@@ -2,11 +2,11 @@
 import pytest
 
 # import project related modules
-from src.detective_query_service.connectors.sql.my_sql import MySQLConnector
+from src.detective_query_service.connectors.sql.sql_connector import SQLConnector
 
 
 @pytest.fixture(scope="session")
-def mysql_test_connection():
+def connection_mysql():
     """
     create a connection with MySQLConnector to a remote dummy mysql database
         host: sql11.freesqldatabase.com
@@ -16,11 +16,33 @@ def mysql_test_connection():
     :return: mysql database connection
     """
 
-    connection = MySQLConnector(
+    connection = SQLConnector(
         host="sql11.freesqldatabase.com",
         user="sql11466052",
         password="nFpVm9qLtu",
-        database="sql11466052"
+        database="sql11466052",
+        db_type="mysql"
     )
 
-    yield connection
+    return connection
+
+
+@pytest.fixture(scope="session")
+def connection_postgresql():
+    """
+    create a connection with MySQLConnector to a remote dummy mysql database
+        host: dumbo.db.elephantsql.com
+        database name and user name: fkutbowf
+        password: 6f8QOboUReqfLJ17mukRAyWBEME6xolU
+    :return: postgresql database connection
+    """
+
+    connection = SQLConnector(
+        host="dumbo.db.elephantsql.com",
+        user="fkutbowf",
+        password="6f8QOboUReqfLJ17mukRAyWBEME6xolU",
+        database="fkutbowf",
+        db_type="postgresql"
+    )
+
+    return connection

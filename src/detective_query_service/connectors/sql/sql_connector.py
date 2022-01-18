@@ -8,16 +8,33 @@ from sqlalchemy import create_engine
 # import project related modules
 from ..general.connection import Connector
 
+class SQLConnector(Connector):
+    """
+    connector supporting
+     - Microsoft SQL Server
+     - MySQL
+     - Oracle
+     - PostgreSQL
+     - SQLite
+    """
 
-class MySQLConnector(Connector):
-
-    def __init__(self, host: str, user: str, password: str, database: str, port: int = 3306):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int = 3306, db_type: str = "mysql"):
+        self.db_type = self.check_db_type_support(db_type)
         super().__init__(host, user, password, database, port)
+
+    def check_db_type_support(self, db_type: str) -> str:
+        supported = ['mysql', 'mariadb', 'postgresql', 'sqlite', 'oracle', 'mssql']
+        if db_type in supported:
+            return db_type
+        else:
+            self.__error_status = f"{db_type} not supported, mysql driver is used as default"
+            print(self.__error_status)
+            return 'mysql'
 
     def create_connection(self) -> bool:
         try:
             engine = create_engine(
-                f"mysql://{self.user}:{self.password}@{self.host}/{self.database}",
+                f"{self.db_type}://{self.user}:{self.password}@{self.host}/{self.database}",
                 echo=True
             )
             self.connection = engine.connect()

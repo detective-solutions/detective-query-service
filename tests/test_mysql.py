@@ -1,9 +1,13 @@
+# import third party module
+import pytest
 
-def test_create_connection(mysql_test_connection):
-    assert not mysql_test_connection.connection.closed, "connection cannot be established"
+
+def test_create_connection(connection_mysql, connection_postgresql):
+    assert not connection_mysql.connection.closed, "mysql connection cannot be established"
+    assert not connection_postgresql.connection.closed, "postgresql connection cannot be established"
 
 
-def test_execute_query_with_restricted_values(mysql_test_connection):
+def test_execute_query_with_restricted_values(connection_mysql, connection_postgresql):
     queries = [
         "CREATE DATABASE",
         "DROP TABLE IF EXISTS 'students'",
@@ -15,22 +19,26 @@ def test_execute_query_with_restricted_values(mysql_test_connection):
 
     results = list()
     expected_result = [("error", "query tries to create, alter, show or use sys information")]
-    for query in queries:
-        status = expected_result == mysql_test_connection.execute_query(query)
-        results.append(status)
+    for conn in [connection_mysql, connection_postgresql]:
+        for query in queries:
+            status = expected_result == conn.execute_query(query)
+            results.append(status)
 
     assert all(results), "query with restricted values can be executed"
 
 
-def test_execute_query_with_legitimate_values(mysql_test_connection):
+def test_execute_query_with_legitimate_values(connection_mysql, connection_postgresql):
     queries = [
-        "SELECT * FROM students LIMIT 1"
+        "SELECT * FROM students LIMIT 1",
+        'SELECT * FROM "public"."FreeQuery" LIMIT 1'
     ]
 
     results = list()
-    for query in queries:
+    conns = [connection_mysql, connection_postgresql]
+    for conn, query in list(zip(conns, queries)):
+        print(query)
         try:
-            status = "error" != mysql_test_connection.execute_query(query)[0][0]
+            status = "error" != conn.execute_query(query)[0][0]
         except IndexError:
             status = False
 

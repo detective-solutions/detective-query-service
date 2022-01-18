@@ -6,9 +6,9 @@ class UninitializedAttributeError(Exception):
     pass
 
 
-class Connector:
+class Connector(object):
 
-    def __init__(self, host: str, user: str, password: str, database: str, port: int):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int, **kwargs):
         self.host = host
         self.port = port
         self.user = user
