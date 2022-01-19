@@ -1,5 +1,4 @@
 # import third party module
-import pytest
 
 
 def test_create_connection(connection_mysql, connection_postgresql):

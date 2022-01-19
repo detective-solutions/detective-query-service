@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 # import project related modules
 from ..general.connection import Connector
 
+
 class SQLConnector(Connector):
     """
     connector supporting
