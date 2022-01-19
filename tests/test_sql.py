@@ -34,10 +34,10 @@ def test_execute_query_with_legitimate_values(connection_mysql, connection_postg
 
     results = list()
     conns = [connection_mysql, connection_postgresql]
-    for conn, query in list(zip(conns, queries)):
-        print(query)
+    for ix, conn in enumerate(conns):
+        print(queries[ix])
         try:
-            status = "error" != conn.execute_query(query)[0][0]
+            status = "error" != conn.execute_query(queries[ix])[0][0]
         except IndexError:
             status = False
 
