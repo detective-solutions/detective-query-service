@@ -16,12 +16,12 @@ class Connector(object):
         self.database = database
         self.__error_status = "None"
         self.__connection: Any
-        self.connection_established = self.create_connection()
+        self.connection_established = self._create_connection()
 
     def check_if_database_exist(self):
         return NotImplementedError
 
-    def query_restriction(self, query: str) -> bool:
+    def _query_restriction(self, query: str) -> bool:
         return False
 
     def get_databases(self):
@@ -30,7 +30,7 @@ class Connector(object):
     def get_tables(self):
         return NotImplementedError
 
-    def create_connection(self) -> bool:
+    def _create_connection(self) -> bool:
         return False
 
     def execute_query(self, query: str):
@@ -44,6 +44,6 @@ class Connector(object):
     def connection(self, value) -> None:
         self.__connection = value
 
-    def ensure_connection(self):
+    def _ensure_connection(self):
         if self.__connection is None:
             raise UninitializedAttributeError("connection is not initialized")

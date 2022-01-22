@@ -1,12 +1,17 @@
+# import third party modules
 from flask import Flask
+from flask_restful import Api
+
+# import project related modules
+from detective_query_service.views import Database, DataQuery
 
 app = Flask(__name__)
+api = Api(app)
 
-
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
+# define routes
+api.add_resource(Database, "/api/resource/<string:uid>")
+api.add_resource(DataQuery, "/api/operation/")
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

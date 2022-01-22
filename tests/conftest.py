@@ -46,3 +46,24 @@ def connection_postgresql():
     )
 
     return connection
+
+
+@pytest.fixture(scope="session")
+def connection_msssql():
+    """
+    create a connection with MySQLConnector to a remote dummy mysql database
+        host: dumbo.db.elephantsql.com
+        database name and user name: fkutbowf
+        password: 6f8QOboUReqfLJ17mukRAyWBEME6xolU
+    :return: postgresql database connection
+    """
+
+    connection = SQLConnector(
+        host="detective-azure-sql-server.database.windows.net",
+        user="detective-server",
+        password="iqPUjn9RPmcU9Qk",
+        database="ms-sql-server-test",
+        db_type="mssql"
+    )
+
+    return connection
