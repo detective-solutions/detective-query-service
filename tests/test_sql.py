@@ -1,13 +1,13 @@
 # import third party module
 
 
-def test_create_connection(connection_mysql, connection_postgresql, connection_msssql):
-    assert not connection_mysql.connection.closed, "mysql connection cannot be established"
-    assert not connection_postgresql.connection.closed, "postgresql connection cannot be established"
-    assert not connection_msssql.connection.closed, "mssql connection cannot be established"
+def test_create_connection(database_connections):
+    # assert not connection_mysql.connection.closed, "mysql connection cannot be established"
+    assert not database_connections[0].connection.closed, "postgresql connection cannot be established"
+    assert not database_connections[1].connection.closed, "mssql connection cannot be established"
 
 
-def test_execute_query_with_restricted_values(connection_mysql, connection_postgresql, connection_msssql):
+def test_execute_query_with_restricted_values(database_connections):
     queries = [
         "CREATE DATABASE",
         "DROP TABLE IF EXISTS 'students'",
@@ -18,8 +18,8 @@ def test_execute_query_with_restricted_values(connection_mysql, connection_postg
     ]
 
     results = list()
-    expected_result = [("error", "query tries to create, alter, show or use sys information")]
-    for conn in [connection_mysql, connection_postgresql, connection_msssql]:
+    expected_result = {"error": ["query tries to create, alter, show or use sys information"]}
+    for conn in database_connections:
         for query in queries:
             status = expected_result == conn.execute_query(query)
             results.append(status)
@@ -27,19 +27,19 @@ def test_execute_query_with_restricted_values(connection_mysql, connection_postg
     assert all(results), "query with restricted values can be executed"
 
 
-def test_execute_query_with_legitimate_values(connection_mysql, connection_postgresql, connection_msssql):
+def test_execute_query_with_legitimate_values(database_connections):
     queries = [
-        "SELECT * FROM students LIMIT 1",
+        # "SELECT * FROM students LIMIT 1",
         'SELECT * FROM "public"."FreeQuery" LIMIT 1',
         'SELECT TOP(1) * FROM [dbo].[AGENTS]'
     ]
 
     results = list()
-    conns = [connection_mysql, connection_postgresql, connection_msssql]
-    for ix, conn in enumerate(conns):
+    for ix, conn in enumerate(database_connections):
         print(queries[ix])
         try:
-            status = "error" != conn.execute_query(queries[ix])[0][0]
+            query_result = conn.execute_query(queries[ix])
+            status = "error" not in query_result.keys()
         except IndexError:
             status = False
 

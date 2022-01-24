@@ -67,3 +67,11 @@ def connection_msssql():
     )
 
     return connection
+
+
+@pytest.fixture(scope="session")
+def database_connections(connection_postgresql, connection_msssql):
+    return [
+        connection_postgresql,
+        connection_msssql
+    ]
