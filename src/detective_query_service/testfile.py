@@ -8,4 +8,4 @@ connection = SQLConnector(
     db_type="mssql"
 )
 
-print(connection)
+print(connection.connection.closed)

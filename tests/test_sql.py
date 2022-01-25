@@ -1,10 +1,10 @@
 # import third party module
 
 
-def test_create_connection(database_connections):
+def test_create_connection(connection_postgresql, connection_msssql):
     # assert not connection_mysql.connection.closed, "mysql connection cannot be established"
-    assert not database_connections[0].connection.closed, "postgresql connection cannot be established"
-    assert not database_connections[1].connection.closed, "mssql connection cannot be established"
+    assert not connection_postgresql.connection.closed, "postgresql connection cannot be established"
+    assert not connection_msssql.connection.closed, "mssql connection cannot be established"
 
 
 def test_execute_query_with_restricted_values(database_connections):
