@@ -1,5 +1,6 @@
 # import standard modules
 import urllib
+from sys import platform
 from typing import Dict, List
 
 # import third party modules
@@ -45,7 +46,10 @@ class SQLConnector(Connector):
         :return: returns a connection address as string
         """
         if self.db_type == 'mssql':
-            params = urllib.parse.quote_plus("Driver={SQL Server}" + f";Server=tcp:{self.host},1433; \
+
+            driver = "SQL Server" if platform.startswith("win") else "ODBC Driver 17 for SQL Server"
+
+            params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{self.host},1433; \
             Database={self.database};Uid={self.user};Pwd={self.password};Encrypt=yes; \
             TrustServerCertificate={trust_server_certificate}; \
             Connection Timeout=30;")
