@@ -1,11 +1,11 @@
 from detective_query_service.connectors.sql.sql_connector import SQLConnector
 
 connection = SQLConnector(
-    host="detective-azure-sql-server.database.windows.net",
-    user="detective-server",
-    password="iqPUjn9RPmcU9Qk",
-    database="ms-sql-server-test",
-    db_type="mssql"
+    host="sql11.freesqldatabase.com",
+    user="sql11466052",
+    password="nFpVm9qLtu",
+    database="sql11466052",
+    db_type="mysql"
 )
 
 print(connection.connection.closed)
