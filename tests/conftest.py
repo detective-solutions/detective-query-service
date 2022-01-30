@@ -5,6 +5,7 @@ import pytest
 from src.detective_query_service.connectors.sql.sql_connector import SQLConnector
 
 
+# TODO: does not work anymore - account data is missing so new mysql instance must be provided
 @pytest.fixture(scope="session")
 def connection_mysql():
     """
@@ -48,6 +49,7 @@ def connection_postgresql():
     return connection
 
 
+# TODO: does not work on a ubuntu test instance in github actions, since ODBC driver is not installed by default
 @pytest.fixture(scope="session")
 def connection_msssql():
     """
@@ -70,8 +72,7 @@ def connection_msssql():
 
 
 @pytest.fixture(scope="session")
-def database_connections(connection_postgresql, connection_msssql):
+def database_connections(connection_postgresql):
     return [
-        connection_postgresql,
-        connection_msssql
+        connection_postgresql
     ]

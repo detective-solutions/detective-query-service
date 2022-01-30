@@ -1,10 +1,10 @@
 # import third party module
 
 
-def test_create_connection(connection_postgresql, connection_msssql):
+def test_create_connection(database_connections):
     # assert not connection_mysql.connection.closed, "mysql connection cannot be established"
-    assert not connection_postgresql.connection.closed, "postgresql connection cannot be established"
-    assert not connection_msssql.connection.closed, "mssql connection cannot be established"
+    assert not database_connections[0].connection.closed, "postgresql connection cannot be established"
+    # assert not connection_msssql.connection.closed, "mssql connection cannot be established"
 
 
 def test_execute_query_with_restricted_values(database_connections):
@@ -31,7 +31,7 @@ def test_execute_query_with_legitimate_values(database_connections):
     queries = [
         # "SELECT * FROM students LIMIT 1",
         'SELECT * FROM "public"."FreeQuery" LIMIT 1',
-        'SELECT TOP(1) * FROM [dbo].[AGENTS]'
+        # 'SELECT TOP(1) * FROM [dbo].[AGENTS]'
     ]
 
     results = list()

@@ -1,11 +1,12 @@
-from detective_query_service.connectors.sql.sql_connector import SQLConnector
+from detective_query_service.connectors.mongodb.mongodb_connector import MongoDBConnector
+import urllib.parse
 
-connection = SQLConnector(
-    host="sql11.freesqldatabase.com",
-    user="sql11466052",
-    password="nFpVm9qLtu",
-    database="sql11466052",
-    db_type="mysql"
+conn = MongoDBConnector(
+    host = "6funv",
+    user = "test-user",
+    password = "PnGrb8XiQG4iiEhy",
+    cluster = "cluster0",
+    database = "sample_airbnb"
 )
 
-print(connection.connection.closed)
+print(conn.execute_query({"property_type": "Apartment"}, "listingsAndReviews"))

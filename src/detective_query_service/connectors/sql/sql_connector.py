@@ -112,7 +112,7 @@ class SQLConnector(Connector):
         executes a given query of selection operation for the created databse connection
 
         :param query: query string which needs to match the database syntax
-        :return: a list of tuples of results
+        :return: a dict with key and list object
         """
         try:
             if self._query_restriction(query):

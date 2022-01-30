@@ -8,12 +8,15 @@ class UninitializedAttributeError(Exception):
 
 class Connector(object):
 
-    def __init__(self, host: str, user: str, password: str, database: str, port: int, **kwargs):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int, cluster: str = None,
+                 api_token: str = None, **kwargs):
         self.host = host
         self.port = port
         self.user = user
         self.password = password
         self.database = database
+        self.api_token: Any = api_token
+        self.cluster: Any = cluster
         self.__error_status = "None"
         self.__connection: Any
         self.connection_established = self._create_connection()

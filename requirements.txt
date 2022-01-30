@@ -6,3 +6,5 @@ cx-Oracle==8.3.0
 flask_restful==0.3.9
 pydgraph==21.3.2
 pyodbc==4.0.32
+pymongo==4.0.1
+dnspython==2.2.0
