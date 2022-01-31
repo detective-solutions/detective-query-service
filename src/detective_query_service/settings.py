@@ -1,18 +1,22 @@
-# import standard modules
-import logging
-
 # import third party modules
 import pydgraph
 
-# Set logging source
-logging.basicConfig()
-logger = logging.getLogger('sqlalchemy.engine')
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
-file_handler = logging.FileHandler('testfile.log')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
+# import project related modules
+from detective_query_service.connectors.sql.sql_connector import SQLConnector
+from detective_query_service.connectors.mongodb.mongodb_connector import MongoDBConnector
+
 
 # set dgraph connection
 dgraph_client_stub = pydgraph.DgraphClientStub('localhost:9080')
 dgraph_client = pydgraph.DgraphClient(dgraph_client_stub)
+
+# connector selection
+
+connectors = {
+    "mysql": SQLConnector,
+    "postgresql": SQLConnector,
+    "mariadb": SQLConnector,
+    "mssql": SQLConnector,
+    "orcale": SQLConnector,
+    "mongodb": MongoDBConnector
+}

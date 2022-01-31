@@ -1,7 +1,7 @@
 # import standard modules
 import urllib
 from sys import platform
-from typing import Dict, List
+from typing import Dict, List, Any
 
 # import third party modules
 from sqlalchemy import text
@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
 # import project related modules
-from detective_query_service.settings import logger
+from detective_query_service.logging import logger
 from detective_query_service.connectors.general.connection import Connector
 from detective_query_service.transformers.tuples import tuple_to_json
 
@@ -33,7 +33,8 @@ class SQLConnector(Connector):
      :param db_type: type of database as described above. Choose from (mssql, oracle, mysql and postgresql), (default - mysql)
     """
 
-    def __init__(self, host: str, user: str, password: str, database: str, port: int = 3306, db_type: str = "mysql"):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int = 3306, db_type: str = "mysql",
+                 **kwargs):
         self.db_type = self._check_db_type_support(db_type)
         super().__init__(host, user, password, database, port)
 

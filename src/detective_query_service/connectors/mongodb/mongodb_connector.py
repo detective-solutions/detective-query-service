@@ -1,13 +1,12 @@
 # import standard modules
 import urllib.parse
-from typing import Dict, List
+from typing import Dict, List, Any
 
 # import third party modules
-import pymongo
 from pymongo import MongoClient
 
 # import project related modules
-from detective_query_service.settings import logger
+from detective_query_service.logging import logger
 from detective_query_service.connectors.general.connection import Connector
 
 
@@ -24,8 +23,10 @@ class MongoDBConnector(Connector):
      :param cluster: clustername e.g. cluster0 as string
     """
 
-    def __init__(self, host: str, user: str, password: str, database: str, port: int = 27017, cluster="cluster0"):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int = 27017, cluster="cluster0",
+                 **kwargs):
         super().__init__(host, user, password, database, port, cluster)
+        self.connected_database: Any
 
     def _get_connection_string(self) -> str:
         """
@@ -45,7 +46,7 @@ class MongoDBConnector(Connector):
         """
         try:
             self.connection = MongoClient(self._get_connection_string(), readPreference='secondary')
-            self.database = self.connection[self.database]
+            self.connected_database = self.connection[self.database]
             return True
 
         except Exception as connection_exception:
@@ -58,7 +59,7 @@ class MongoDBConnector(Connector):
     def close(self):
         self.connection.close()
 
-    def execute_query(self, query: dict, table: str) -> Dict[str, List]:
+    def execute_query(self, query: dict) -> Dict[str, List]:
         """
         executes a given query of selection operation for the created databse connection
 
@@ -67,13 +68,17 @@ class MongoDBConnector(Connector):
         :return: a dict with key and list object
         """
         try:
-            collection = self.database[table]
-            results = list()
+            if self.connected_database != None:
+                table = query.get("table_name", "")
+                collection = self.connected_database[table]
+                results = list()
 
-            for line in collection.find(query):
-                results.append(line)
+                for line in collection.find(query.get("query")):
+                    results.append(line)
 
-            return {k: [d.get(k, None) for d in results] for k in results[0]}
+                return {k: [d.get(k, None) for d in results] for k in results[0]}
+            else:
+                return {"error": [f"database connection does not exist for {table}"]}
 
         except Exception as db_exception:
             logger.error(str(db_exception))

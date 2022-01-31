@@ -7,11 +7,12 @@ from flask import abort, request
 from flask_restful import Resource
 
 # import project related modules
-from detective_query_service.settings import dgraph_client, logger
+from detective_query_service.logging import logger
+from detective_query_service.settings import connectors, dgraph_client
 from detective_query_service.graphql.databases import get_database_by_xid
-from detective_query_service.connectors.sql.sql_connector import SQLConnector
 
 conn: Any = None
+db_type: Any = None
 
 
 class Database(Resource):
@@ -27,7 +28,9 @@ class Database(Resource):
             if conn is not None:
                 conn.close()
 
-            conn = SQLConnector(
+            connector_type = db_config["db_type"]
+            connector = connectors[connector_type]
+            conn = connector(
                 host=db_config["host"],
                 user=db_config["user"],
                 password=db_config["password"],

@@ -1,5 +1,5 @@
 # import standard modules
-from typing import Any
+from typing import Any, Dict, Optional
 
 
 class UninitializedAttributeError(Exception):
@@ -36,7 +36,7 @@ class Connector(object):
     def _create_connection(self) -> bool:
         return False
 
-    def execute_query(self, query: str):
+    def execute_query(self, query: Any):
         return NotImplementedError
 
     @property
