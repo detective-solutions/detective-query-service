@@ -5,7 +5,7 @@ from pydgraph import DgraphClient
 from detective_query_service.graphql.execution import execute_query
 
 
-def get_database_by_xid(client: DgraphClient, xid: str) -> dict:
+def get_database_by_uid(client: DgraphClient, xid: str) -> dict:
 
     query = '''
         query sourceConnection($number: string) {

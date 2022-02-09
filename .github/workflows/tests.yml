@@ -1,5 +1,10 @@
 name: Tests
-
+env:
+  MYSQL_DATABASE: test_forest
+  MYSQL_USER: test_user
+  MYSQL_PASSWORD: password
+  MYSQL_HOST: mysql-master
+  NODE_ENV: test
 on:
   - push
   - pull_request
@@ -11,13 +16,33 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         python-version: ['3.8', '3.9']
-
+    services:
+      mysql-master:
+        image: mysql:latest
+        ports:
+          - 3306/tcp
+        env:
+          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ env.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+        options: >-
+          --name=mysql-master
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Start Databases
+        uses: addnab/docker-run-action@v3
+        with:
+          - image: mysql:latest
+            options: -p 3000:3000
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
