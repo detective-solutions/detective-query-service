@@ -38,11 +38,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Start Databases
-        uses: addnab/docker-run-action@v3
-        with:
-          - image: mysql:latest
-            options: -p 3000:3000
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
