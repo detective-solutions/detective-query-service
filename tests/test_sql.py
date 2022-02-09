@@ -2,8 +2,8 @@
 
 
 def test_create_connection(database_connections):
-    # assert not connection_mysql.connection.closed, "mysql connection cannot be established"
-    assert not database_connections[0].connection.closed, "postgresql connection cannot be established"
+    assert not database_connections[0].connection.closed, "mysql connection cannot be established"
+    # assert not database_connections[0].connection.closed, "postgresql connection cannot be established"
     # assert not connection_msssql.connection.closed, "mssql connection cannot be established"
 
 

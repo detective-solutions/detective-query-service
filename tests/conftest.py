@@ -5,7 +5,6 @@ import pytest
 from src.detective_query_service.connectors.sql.sql_connector import SQLConnector
 
 
-# TODO: does not work anymore - account data is missing so new mysql instance must be provided
 @pytest.fixture(scope="session")
 def connection_mysql():
     """
@@ -18,10 +17,10 @@ def connection_mysql():
     """
 
     connection = SQLConnector(
-        host="sql11.freesqldatabase.com",
-        user="sql11466052",
-        password="nFpVm9qLtu",
-        database="sql11466052",
+        host="localhost",
+        user="test_user",
+        password="password",
+        database="test_forest",
         db_type="mysql"
     )
 
@@ -72,7 +71,8 @@ def connection_msssql():
 
 
 @pytest.fixture(scope="session")
-def database_connections(connection_postgresql):
+def database_connections(connection_postgresql, connection_mysql):
     return [
-        connection_postgresql
+        # connection_postgresql
+        connection_mysql
     ]
