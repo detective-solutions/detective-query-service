@@ -68,7 +68,7 @@ class MongoDBConnector(Connector):
         :return: a dict with key and list object
         """
         try:
-            if self.connected_database != None:
+            if self.connected_database is not None:
                 table = query.get("table_name", "")
                 collection = self.connected_database[table]
                 results = list()

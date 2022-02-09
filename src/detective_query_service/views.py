@@ -8,8 +8,9 @@ from flask_restful import Resource
 
 # import project related modules
 from detective_query_service.logging import logger
-from detective_query_service.settings import connectors, dgraph_client
+from detective_query_service.settings import dgraph_client
 from detective_query_service.graphql.databases import get_database_by_xid
+from detective_query_service.connectors.general.standard import Connector
 
 conn: Any = None
 db_type: Any = None
@@ -28,15 +29,7 @@ class Database(Resource):
             if conn is not None:
                 conn.close()
 
-            connector_type = db_config["db_type"]
-            connector = connectors[connector_type]
-            conn = connector(
-                host=db_config["host"],
-                user=db_config["user"],
-                password=db_config["password"],
-                database=db_config["database"],
-                db_type=db_config["db_type"]
-            )
+            conn = Connector(**db_config)
 
             logger.info(f"connection established for {uid}")
             return {"info": f"connection established for {uid}"}
@@ -49,8 +42,10 @@ class Database(Resource):
 class DataQuery(Resource):
     def post(self):
         global conn
+        try:
+            query = json.loads(request.data)["query"]
+            results = conn.execute_query(query)
+            return {"data": results}
 
-        query = json.loads(request.data)["query"]
-        results = conn.execute_query(query)
-
-        return {"data": results}
+        except KeyError:
+            abort(400, message="query not provided in payload")

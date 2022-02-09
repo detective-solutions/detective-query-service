@@ -1,7 +1,7 @@
 # import standard modules
 import urllib
 from sys import platform
-from typing import Dict, List, Any
+from typing import Dict, List
 
 # import third party modules
 from sqlalchemy import text
