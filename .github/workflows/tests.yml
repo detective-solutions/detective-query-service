@@ -48,7 +48,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       mssql:
-        image: docker pull mcr.microsoft.com/mssql/server
+        image: mcr.microsoft.com/mssql/server
         ports:
           - 1433:1433
         env:
