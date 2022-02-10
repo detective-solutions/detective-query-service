@@ -47,7 +47,7 @@ def database_configs():
             "db_type": "postgresql"
         },
         "mssql": {
-            "host": "127.0.0.1",
+            "host": "0.0.0.0",
             "user": "test_user",
             "password": "test",
             "database": "testdb",
