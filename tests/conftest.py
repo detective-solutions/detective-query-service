@@ -5,9 +5,9 @@ import pytest
 from src.detective_query_service.connectors.sql.sql_connector import SQLConnector
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def database_configs():
-    return {
+    yield {
         "mysql": {
             "host": "0.0.0.0",
             "user": "test_user",
