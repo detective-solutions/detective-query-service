@@ -1,7 +1,25 @@
+# import standard modules
+import urllib
+import platform
+
 # import third party module
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
+
+
+def get_connection_string(db_type, user, password, host, port, database):
+    if db_type == 'mssql':
+
+        driver = "SQL Server" if platform.startswith("win") else "ODBC Driver 19 for SQL Server"
+
+        params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{host},1433; \
+                Database={database};Uid={user};Pwd={password};Encrypt=yes; \
+                TrustServerCertificate=no; \
+                Connection Timeout=30;")
+        return f'{db_type}+pyodbc:///?odbc_connect={params}'
+    else:
+        return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
 
 
 @pytest.mark.parametrize("db_type", ["mysql", "postgresql", "mssql"])
@@ -16,7 +34,8 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         port = config.get("port", 3306)
         database = config.get("database", "")
 
-        test_engine = create_engine(f"{db_type}://{user}:{password}@{host}:{port}/{database}")
+        connection_string = get_connection_string(db_type, user, password, host, port, database)
+        test_engine = create_engine(connection_string)
         if not database_exists(test_engine.url):
             create_database(test_engine.url)
 
