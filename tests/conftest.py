@@ -22,7 +22,7 @@ def database_configs():
 @pytest.fixture(scope="session")
 def connection_mysql(database_configs):
     connection = SQLConnector(
-        **database_configs.get("mysql", default="mysql")
+        **database_configs.get("mysql", "mysql")
     )
     return connection
 

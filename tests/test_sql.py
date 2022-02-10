@@ -6,11 +6,11 @@ def test_create_mysql_dummy_data(database_configs):
     config = database_configs.get("mysql", None)
 
     if config is not None:
-        user = config.get("user", default="")
-        password = config.get("password", default="")
-        host = config.get("host", default="")
-        port = config.get("port", default=3306)
-        database = config.get("database", default="")
+        user = config.get("user", "")
+        password = config.get("password", "")
+        host = config.get("host", "")
+        port = config.get("port", 3306)
+        database = config.get("database", "")
 
     test_engine = create_engine(f"mysql+mysqldb://{user}:{password}@{host}:{port}/{database}")
     data_available = False
