@@ -12,6 +12,11 @@ def database_setup_queries():
             "table": "CREATE TABLE students (id int, name varchar(20));",
             "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
             "test": "SELECT * FROM students LIMIT 1;"
+        },
+        "postgresql": {
+            "table": "CREATE TABLE students (id int, name varchar(20));",
+            "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
+            "test": "SELECT * FROM students LIMIT 1;"
         }
 
     }
@@ -27,6 +32,14 @@ def database_configs():
             "database": "testdb",
             "port": 3306,
             "db_type": "mysql"
+        },
+        "postgresql": {
+            "host": "0.0.0.0",
+            "user": "test_user",
+            "password": "test",
+            "database": "testdb",
+            "port": 8080,
+            "db_type": "postgresql"
         }
     }
 
@@ -41,22 +54,9 @@ def connection_mysql(database_configs):
 
 @pytest.fixture(scope="session")
 def connection_postgresql():
-    """
-    create a connection with MySQLConnector to a remote dummy mysql database
-        host: dumbo.db.elephantsql.com
-        database name and user name: fkutbowf
-        password: 6f8QOboUReqfLJ17mukRAyWBEME6xolU
-    :return: postgresql database connection
-    """
-
     connection = SQLConnector(
-        host="dumbo.db.elephantsql.com",
-        user="fkutbowf",
-        password="6f8QOboUReqfLJ17mukRAyWBEME6xolU",
-        database="fkutbowf",
-        db_type="postgresql"
+        **database_configs.get("postgresql", "postgresql")
     )
-
     return connection
 
 
@@ -83,8 +83,8 @@ def connection_msssql():
 
 
 @pytest.fixture(scope="session")
-def database_connections(connection_mysql):
+def database_connections(connection_mysql, connection_postgresql):
     return [
-        # connection_postgresql
-        connection_mysql
+        connection_mysql,
+        connection_postgresql
     ]

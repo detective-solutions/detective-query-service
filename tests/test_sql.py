@@ -3,7 +3,7 @@ import pytest
 from sqlalchemy import create_engine
 
 
-@pytest.mark.parametrize("db_type", ["mysql"])
+@pytest.mark.parametrize("db_type", ["mysql", "postgresql"])
 def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type):
     config = database_configs.get(db_type, None)
     setup_queries = database_setup_queries.get(db_type, None)
@@ -32,7 +32,7 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
 
 def test_create_connection(database_connections):
     assert not database_connections[0].connection.closed, "mysql connection cannot be established"
-    # assert not database_connections[0].connection.closed, "postgresql connection cannot be established"
+    assert not database_connections[1].connection.closed, "postgresql connection cannot be established"
     # assert not connection_msssql.connection.closed, "mssql connection cannot be established"
 
 
