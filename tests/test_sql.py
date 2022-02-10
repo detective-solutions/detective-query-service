@@ -1,33 +1,33 @@
 # import third party module
-from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData
+import pytest
+from sqlalchemy import create_engine
 
 
-def test_create_mysql_dummy_data(database_configs):
-    config = database_configs.get("mysql", None)
+@pytest.mark.parametrize("db_type", ["mysql"])
+def test_create_mysql_dummy_data(database_configs, database_setup_queries, db_type):
+    config = database_configs.get(db_type, None)
+    setup_queries = database_setup_queries.get(db_type, None)
 
-    if config is not None:
+    if (config is not None) and (setup_queries is not None):
         user = config.get("user", "")
         password = config.get("password", "")
         host = config.get("host", "")
         port = config.get("port", 3306)
         database = config.get("database", "")
 
-    test_engine = create_engine(f"mysql+mysqldb://{user}:{password}@{host}:{port}/{database}")
-    test_conn = test_engine.connect()
+        test_engine = create_engine(f"{db_type}://{user}:{password}@{host}:{port}/{database}")
+        test_conn = test_engine.connect()
+        query_result = [(1, "Sarah")]
 
-    data_available = False
-    error = ""
-    query_result = [(1, "Sarah")]
+        test_engine.execute(setup_queries["table"])
+        test_conn.execute(setup_queries["insert"])
+        test_result = test_conn.execute(setup_queries["test"]).fetchall()
 
-    test_engine.execute('CREATE TABLE students (id int, name varchar(20));')
-    test_conn.execute("INSERT INTO students (id, name) VALUES (1, 'Sarah');")
-    test_result = test_conn.execute("SELECT * FROM students LIMIT 1;").fetchall()
-
-    data_available = True
-
-    assert test_conn.close is not False, "no connection established"
-    assert query_result[0][1] == test_result[0][1], "db entry does not fit"
-    assert data_available, f"{error}"
+        assert test_conn.close is not False, "no connection established"
+        assert query_result[0][1] == test_result[0][1], "db entry does not fit"
+    else:
+        assert config is not None, f"data base configuration for {db_type} not found"
+        assert setup_queries is not None, f"database setup queries for {db_type} not found"
 
 
 def test_create_connection(database_connections):

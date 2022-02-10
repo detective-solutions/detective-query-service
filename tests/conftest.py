@@ -6,6 +6,18 @@ from src.detective_query_service.connectors.sql.sql_connector import SQLConnecto
 
 
 @pytest.fixture(scope="session")
+def database_setup_queries():
+    yield {
+        "mysql": {
+            "table": "CREATE TABLE students (id int, name varchar(20));",
+            "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
+            "test": "SELECT * FROM students LIMIT 1;"
+        }
+
+    }
+
+
+@pytest.fixture(scope="session")
 def database_configs():
     yield {
         "mysql": {
