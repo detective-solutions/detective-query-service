@@ -1,6 +1,7 @@
 # import third party module
 import pytest
 from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
 
 
 @pytest.mark.parametrize("db_type", ["mysql", "postgresql"])
@@ -14,10 +15,11 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         host = config.get("host", "")
         port = config.get("port", 3306)
         database = config.get("database", "")
-        if db_type == "mysql":
-            test_engine = create_engine(f"{db_type}://{user}:{password}@{host}:{port}/{database}")
-        else:
-            test_engine = create_engine(f"{db_type}://{user}:{password}@{host}:{port}/")
+
+        test_engine = create_engine(f"{db_type}://{user}:{password}@{host}:{port}/{database}")
+        if not database_exists(test_engine.url):
+            create_database(test_engine.url)
+
         test_conn = test_engine.connect()
         expected_result = [(1, "Sarah")]
 
