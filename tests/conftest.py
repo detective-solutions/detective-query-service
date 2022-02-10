@@ -53,7 +53,7 @@ def connection_mysql(database_configs):
 
 
 @pytest.fixture(scope="session")
-def connection_postgresql():
+def connection_postgresql(database_configs):
     connection = SQLConnector(
         **database_configs.get("postgresql", "postgresql")
     )
