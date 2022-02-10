@@ -11,14 +11,14 @@ from sqlalchemy_utils import database_exists, create_database
 def get_connection_string(db_type, user, password, host, port, database):
     if db_type == 'mssql':
 
-        driver = "SQL Server" if platform.startswith("win") else "{ODBC Driver 17 for SQL Server}"
+        driver = "SQL Server" if platform.startswith("win") else "{SQL Server}"
 
         params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{host},{port}; \
                 Database={database};Uid={user};Pwd={password};Encrypt=yes; \
                 TrustServerCertificate=no; \
                 Connection Timeout=30;")
         # f'{db_type}+pyodbc:///?odbc_connect={params}'
-        return f"{db_type}+pyodbc://{user}:{password}@{host}:{port}/{database}"
+        return f'{db_type}+pyodbc:///?odbc_connect={params}'
     else:
         return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
 
