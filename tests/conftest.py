@@ -14,7 +14,7 @@ def database_setup_queries():
             "test": "SELECT * FROM students LIMIT 1;"
         },
         "postgresql": {
-            "table": "CREATE TABLE students (id int, name varchar(20));",
+            "table": "CREATE TABLE students (id serial PRIMARY KEY, name VARCHAR (50) UNIQUE NOT NULL);",
             "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
             "test": "SELECT * FROM students LIMIT 1;"
         }
