@@ -65,7 +65,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo su
-          wget "https://gallery.technet.microsoft.com/ODBC-Driver-13-for-Ubuntu-b87369f0/file/154097/2/installodbc.sh" -O .
+          wget -O . "https://gallery.technet.microsoft.com/ODBC-Driver-13-for-Ubuntu-b87369f0/file/154097/2/installodbc.sh"
           sh installodbc.sh
           python -m pip install --upgrade pip
           pip install tox tox-gh-actions
