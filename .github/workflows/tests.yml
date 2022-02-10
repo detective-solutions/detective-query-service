@@ -1,9 +1,10 @@
 name: Tests
 env:
-  MYSQL_DATABASE: testdb
-  MYSQL_USER: test_user
-  MYSQL_PASSWORD: test
+  SQL_DATABASE: testdb
+  SQL_USER: test_user
+  SQL_PASSWORD: test
   MYSQL_HOST: mysql-master
+  POSTGRES_HOST: postgres
   NODE_ENV: test
 on:
   - push
@@ -22,16 +23,25 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ env.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
-          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.SQL_DATABASE }}
+          MYSQL_USER: ${{ env.SQL_USER }}
+          MYSQL_PASSWORD: ${{ env.SQL_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
         options: >-
           --name=mysql-master
           --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
+      postgres:
+        image: postgres:latest
+        ports:
+          - 8080:8080
+        env:
+          POSTGRES_DATABASE: ${{ env.SQL_DATABASE }}
+          POSTGRES_USER: ${{ env.SQL_USER }}
+          POSTGRES_PASSWORD: ${{ env.SQL_PASSWORD }}
+          POSTGRES_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}

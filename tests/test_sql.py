@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 
 
 @pytest.mark.parametrize("db_type", ["mysql"])
-def test_create_mysql_dummy_data(database_configs, database_setup_queries, db_type):
+def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type):
     config = database_configs.get(db_type, None)
     setup_queries = database_setup_queries.get(db_type, None)
 
@@ -17,14 +17,14 @@ def test_create_mysql_dummy_data(database_configs, database_setup_queries, db_ty
 
         test_engine = create_engine(f"{db_type}://{user}:{password}@{host}:{port}/{database}")
         test_conn = test_engine.connect()
-        query_result = [(1, "Sarah")]
+        expected_result = [(1, "Sarah")]
 
         test_engine.execute(setup_queries["table"])
         test_conn.execute(setup_queries["insert"])
         test_result = test_conn.execute(setup_queries["test"]).fetchall()
 
         assert test_conn.close is not False, "no connection established"
-        assert query_result[0][1] == test_result[0][1], "db entry does not fit"
+        assert expected_result[0][1] == test_result[0][1], "db entry does not fit"
     else:
         assert config is not None, f"data base configuration for {db_type} not found"
         assert setup_queries is not None, f"database setup queries for {db_type} not found"
