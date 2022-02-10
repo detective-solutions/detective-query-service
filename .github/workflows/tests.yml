@@ -36,7 +36,7 @@ jobs:
       postgres:
         image: postgres:latest
         ports:
-          - 8080:8080
+          - 5423:5423
         env:
           POSTGRES_DATABASE: ${{ env.SQL_DATABASE }}
           POSTGRES_USER: ${{ env.SQL_USER }}

@@ -38,7 +38,7 @@ def database_configs():
             "user": "test_user",
             "password": "test",
             "database": "testdb",
-            "port": 8080,
+            "port": 5423,
             "db_type": "postgresql"
         }
     }
