@@ -19,18 +19,10 @@ def test_create_mysql_dummy_data(database_configs):
     error = ""
     query_result = [(1, "Sarah")]
 
-        
-    meta = MetaData()
-    students = Table(
-        'students', meta,
-        Column('id', Integer, primary_key=True),
-        Column('name', String),
-        Column('lastname', String),
-    )
-    meta.create_all(test_engine)
-    test_conn.execute("INSERT INTO students (id, name, lastname) VALUES (1, 'Sarah', 'Zauberbaum');")
-    test_conn.commit()
+    test_engine.execute('CREATE TABLE "students" (id INTEGER NOT NULL, name VARCHAR, PRIMARY KEY (id));')
+    test_conn.execute("INSERT INTO students (id, name) VALUES (1, 'Sarah');")
     test_result = test_conn.execute("SELECT * FROM students LIMIT 1;").fetchall()
+
     data_available = True
 
     assert test_conn.close is not False, "no connection established"
