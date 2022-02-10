@@ -1,6 +1,6 @@
 # import standard modules
 import urllib
-import platform
+from sys import platform
 
 # import third party module
 import pytest
