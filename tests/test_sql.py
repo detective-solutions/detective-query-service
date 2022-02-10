@@ -17,27 +17,25 @@ def test_create_mysql_dummy_data(database_configs):
 
     data_available = False
     error = ""
-    test_result = [(1, "peter")]
-    try:
+    query_result = [(1, "Sarah")]
+
         
-        meta = MetaData()
-        students = Table(
-            'students', meta,
-            Column('id', Integer, primary_key=True),
-            Column('name', String),
-            Column('lastname', String),
-        )
-        meta.create_all(test_engine)
-        test_conn.execute("INSERT INTO students (id, name, lastname) VALUES (1, 'Sarah', 'Zauberbaum');")
-        test_conn.commit()
-        test_result = test_conn.execute("SELECT * FROM students LIMIT 1;").fetchall()
-        data_available = True
-    except Exception as e:
-        error = str(e)
-    finally:
-        assert test_conn.close is not False, "no connection established"
-        assert test_result[0][1] == "Sarah", "db entry does not fit"
-        assert data_available, f"{error}"
+    meta = MetaData()
+    students = Table(
+        'students', meta,
+        Column('id', Integer, primary_key=True),
+        Column('name', String),
+        Column('lastname', String),
+    )
+    meta.create_all(test_engine)
+    test_conn.execute("INSERT INTO students (id, name, lastname) VALUES (1, 'Sarah', 'Zauberbaum');")
+    test_conn.commit()
+    test_result = test_conn.execute("SELECT * FROM students LIMIT 1;").fetchall()
+    data_available = True
+
+    assert test_conn.close is not False, "no connection established"
+    assert query_result[0][1] == test_result[0][1], "db entry does not fit"
+    assert data_available, f"{error}"
 
 
 def test_create_connection(database_connections):
