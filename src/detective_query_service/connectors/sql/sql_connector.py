@@ -56,7 +56,7 @@ class SQLConnector(Connector):
             Connection Timeout=30;")
             return f'{self.db_type}+pyodbc:///?odbc_connect={params}'
         else:
-            return f"{self.db_type}://{self.user}:{self.password}@{self.host}/{self.database}"
+            return f"{self.db_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
 
     def _check_db_type_support(self, db_type: str) -> str:
         """

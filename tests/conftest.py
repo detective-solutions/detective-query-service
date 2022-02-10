@@ -17,7 +17,7 @@ def connection_mysql():
     """
 
     connection = SQLConnector(
-        host="mysql-master",
+        host="0.0.0.0",
         user="test_user",
         password="test",
         database="testdb",
