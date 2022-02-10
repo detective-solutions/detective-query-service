@@ -23,12 +23,12 @@ def test_create_mysql_dummy_data(database_configs):
         meta = MetaData()
         students = Table(
             'students', meta,
-            Column('id', Integer, primary_key = True),
+            Column('id', Integer, primary_key=True),
             Column('name', String),
             Column('lastname', String),
         )
         meta.create_all(test_engine)
-        test_conn.execute("INSERT INTO testdb.students (id, name, lastname) VALUES (1, 'Sarah', 'Zauberbaum');")
+        test_conn.execute("INSERT INTO students (id, name, lastname) VALUES (1, 'Sarah', 'Zauberbaum');")
         test_result = test_conn.execute("SELECT * FROM students LIMIT 1;").fetchall()
         data_available = True
     except Exception as e:
