@@ -19,7 +19,7 @@ def test_create_mysql_dummy_data(database_configs):
     error = ""
     query_result = [(1, "Sarah")]
 
-    test_engine.execute('CREATE TABLE "students" (id INTEGER NOT NULL, name VARCHAR, PRIMARY KEY (id));')
+    test_engine.execute('CREATE TABLE students (id int, name varchar(20));')
     test_conn.execute("INSERT INTO students (id, name) VALUES (1, 'Sarah');")
     test_result = test_conn.execute("SELECT * FROM students LIMIT 1;").fetchall()
 
