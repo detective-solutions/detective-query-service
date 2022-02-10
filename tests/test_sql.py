@@ -14,9 +14,10 @@ def test_create_mysql_dummy_data(database_configs):
 
     test_engine = create_engine(f"mysql+mysqldb://{user}:{password}@{host}:{port}/{database}")
     test_conn = test_engine.connect()
-    """
+
     data_available = False
     error = ""
+    test_result = [(1, "peter")]
     try:
         
         meta = MetaData()
@@ -27,14 +28,15 @@ def test_create_mysql_dummy_data(database_configs):
             Column('lastname', String),
         )
         meta.create_all(test_engine)
-        test_engine.execute("INSERT INTO testdb.students (id, name, lastname) VALUES (1, 'Sarah', 'Zauberbaum');")
+        test_conn.execute("INSERT INTO testdb.students (id, name, lastname) VALUES (1, 'Sarah', 'Zauberbaum');")
+        test_result = test_conn.execute("SELECT * FROM students LIMIT 1;").fetchall()
         data_available = True
     except Exception as e:
         error = str(e)
     finally:
+        assert test_conn.close is not False, "no connection established"
+        assert test_result[0][1] == "Sarah", "db entry does not fit"
         assert data_available, f"{error}"
-    """
-    assert test_conn.close != False, "no connection established"
 
 
 def test_create_connection(database_connections):
@@ -65,7 +67,7 @@ def test_execute_query_with_restricted_values(database_connections):
 
 def test_execute_query_with_legitimate_values(database_connections):
     queries = [
-        "SELECT * FROM students LIMIT 1",
+        'SELECT * FROM students LIMIT 1',
         # 'SELECT * FROM "public"."FreeQuery" LIMIT 1',
         # 'SELECT TOP(1) * FROM [dbo].[AGENTS]'
     ]
