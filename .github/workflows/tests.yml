@@ -1,8 +1,8 @@
 name: Tests
 env:
-  MYSQL_DATABASE: root
-  MYSQL_USER: root
-  MYSQL_PASSWORD: root
+  MYSQL_DATABASE: testdb
+  MYSQL_USER: test_user
+  MYSQL_PASSWORD: test
   MYSQL_HOST: mysql-master
   NODE_ENV: test
 on:
