@@ -34,16 +34,19 @@ jobs:
           --health-timeout=5s
           --health-retries=3
       postgres:
-        image: postgres:latest
+        image: postgres
         ports:
-          - 5423:5423
+          - 5432:5432
         env:
           POSTGRES_DATABASE: ${{ env.SQL_DATABASE }}
           POSTGRES_USER: ${{ env.SQL_USER }}
           POSTGRES_PASSWORD: ${{ env.SQL_PASSWORD }}
           POSTGRES_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
         options: >-
-          --name=postgres
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
