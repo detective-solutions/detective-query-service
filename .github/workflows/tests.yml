@@ -64,6 +64,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          sudo su
+          wget wget https://gallery.technet.microsoft.com/ODBC-Driver-13-for-Ubuntu-b87369f0/file/154097/2/installodbc.sh
+          sh installodbc.sh
           python -m pip install --upgrade pip
           pip install tox tox-gh-actions
       - name: Test with tox
