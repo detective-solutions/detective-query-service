@@ -48,7 +48,7 @@ class SQLConnector(Connector):
         """
         if self.db_type == 'mssql':
 
-            driver = "SQL Server" if platform.startswith("win") else "ODBC Driver 17 for SQL Server"
+            driver = "SQL Server" if platform.startswith("win") else "ODBC Driver 19 for SQL Server"
 
             params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{self.host},1433; \
             Database={self.database};Uid={self.user};Pwd={self.password};Encrypt=yes; \
