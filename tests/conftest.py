@@ -14,9 +14,14 @@ def database_setup_queries():
             "test": "SELECT * FROM students LIMIT 1;"
         },
         "postgresql": {
-            "table": "CREATE TABLE students (id serial PRIMARY KEY, name VARCHAR (50) UNIQUE NOT NULL);",
+            "table": "CREATE TABLE students (id serial PRIMARY KEY, name VARCHAR (20) UNIQUE NOT NULL);",
             "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
             "test": "SELECT * FROM students LIMIT 1;"
+        },
+        "mssql": {
+            "table": "CREATE TABLE testdb.students (id int NOT NULL, name VARCHAR (20) NOT NULL);",
+            "insert": "INSERT INTO testdb.students (id, name) VALUES (1, 'Sarah');",
+            "test": "SELECT * FROM testdb.students LIMIT 1;"
         }
 
     }
