@@ -42,6 +42,8 @@ jobs:
           POSTGRES_USER: ${{ env.SQL_USER }}
           POSTGRES_PASSWORD: ${{ env.SQL_PASSWORD }}
           POSTGRES_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
+        options: >-
+          --name=postgres
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}

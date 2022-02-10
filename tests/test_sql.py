@@ -14,8 +14,10 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         host = config.get("host", "")
         port = config.get("port", 3306)
         database = config.get("database", "")
-
-        test_engine = create_engine(f"{db_type}://{user}:{password}@{host}:{port}/{database}")
+        if db_type == "mysql":
+            test_engine = create_engine(f"{db_type}://{user}:{password}@{host}:{port}/{database}")
+        else:
+            test_engine = create_engine(f"{db_type}://{user}:{password}@{host}:{port}/")
         test_conn = test_engine.connect()
         expected_result = [(1, "Sarah")]
 
@@ -23,7 +25,9 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         test_conn.execute(setup_queries["insert"])
         test_result = test_conn.execute(setup_queries["test"]).fetchall()
 
-        assert test_conn.close is not False, "no connection established"
+        connection_status = test_conn.close
+        test_conn.close()
+        assert connection_status is not False, "no connection established"
         assert expected_result[0][1] == test_result[0][1], "db entry does not fit"
     else:
         assert config is not None, f"data base configuration for {db_type} not found"
