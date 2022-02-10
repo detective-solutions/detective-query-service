@@ -29,8 +29,8 @@ def test_execute_query_with_restricted_values(database_connections):
 
 def test_execute_query_with_legitimate_values(database_connections):
     queries = [
-        # "SELECT * FROM students LIMIT 1",
-        'SELECT * FROM "public"."FreeQuery" LIMIT 1',
+        "SELECT * FROM testdb LIMIT 1",
+        # 'SELECT * FROM "public"."FreeQuery" LIMIT 1',
         # 'SELECT TOP(1) * FROM [dbo].[AGENTS]'
     ]
 
