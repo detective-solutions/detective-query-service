@@ -1,4 +1,35 @@
 # import third party module
+from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData
+
+
+def test_create_mysql_dummy_data(database_configs):
+    config = database_configs.get("mysql", None)
+
+    if config is not None:
+        user = config.get("user", default="")
+        password = config.get("password", default="")
+        host = config.get("host", default="")
+        port = config.get("port", default=3306)
+        database = config.get("database", default="")
+
+    test_engine = create_engine(f"mysql+mysqldb://{user}:{password}@{host}:{port}/{database}")
+    data_available = False
+    error = ""
+    try:
+        meta = MetaData()
+        students = Table(
+            'students', meta,
+            Column('id', Integer, primary_key = True),
+            Column('name', String),
+            Column('lastname', String),
+        )
+        meta.create_all(test_engine)
+        test_engine.execute("INSERT INTO students (id, name, lastname) VALUES (1, 'Sarah', 'Zauberbaum');")
+        data_available = True
+    except Exception as e:
+        error = str(e)
+    finally:
+        assert data_available, f"{error}"
 
 
 def test_create_connection(database_connections):

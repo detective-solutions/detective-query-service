@@ -5,25 +5,25 @@ import pytest
 from src.detective_query_service.connectors.sql.sql_connector import SQLConnector
 
 
+@pytest.fixture()
+def database_configs():
+    return {
+        "mysql": {
+            "host": "0.0.0.0",
+            "user": "test_user",
+            "password": "test",
+            "database": "testdb",
+            "port": 3306,
+            "db_type": "mysql"
+        }
+    }
+
+
 @pytest.fixture(scope="session")
-def connection_mysql():
-    """
-    create a connection with MySQLConnector to a remote dummy mysql database
-        host: sql11.freesqldatabase.com
-        login email: xkh27858@qopow.com
-        database name and user name: sql11466052
-        password: nFpVm9qLtu
-    :return: mysql database connection
-    """
-
+def connection_mysql(database_configs):
     connection = SQLConnector(
-        host="0.0.0.0",
-        user="test_user",
-        password="test",
-        database="testdb",
-        db_type="mysql"
+        **database_configs.get("mysql", default="mysql")
     )
-
     return connection
 
 
