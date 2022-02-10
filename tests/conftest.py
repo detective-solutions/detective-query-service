@@ -40,6 +40,14 @@ def database_configs():
             "database": "testdb",
             "port": 5432,
             "db_type": "postgresql"
+        },
+        "mssql": {
+            "host": "0.0.0.0",
+            "user": "test_user",
+            "password": "test",
+            "database": "testdb",
+            "port": 1433,
+            "db_type": "mssql"
         }
     }
 
@@ -62,29 +70,17 @@ def connection_postgresql(database_configs):
 
 # TODO: does not work on a ubuntu test instance in github actions, since ODBC driver is not installed by default
 @pytest.fixture(scope="session")
-def connection_msssql():
-    """
-    create a connection with MySQLConnector to a remote dummy mysql database
-        host: dumbo.db.elephantsql.com
-        database name and user name: fkutbowf
-        password: 6f8QOboUReqfLJ17mukRAyWBEME6xolU
-    :return: postgresql database connection
-    """
-
+def connection_msssql(database_configs):
     connection = SQLConnector(
-        host="detective-azure-sql-server.database.windows.net",
-        user="detective-server",
-        password="iqPUjn9RPmcU9Qk",
-        database="ms-sql-server-test",
-        db_type="mssql"
+        **database_configs.get("mssql", "mssql")
     )
-
     return connection
 
 
 @pytest.fixture(scope="session")
-def database_connections(connection_mysql, connection_postgresql):
+def database_connections(connection_mysql, connection_postgresql, connection_msssql):
     return [
         connection_mysql,
-        connection_postgresql
+        connection_postgresql,
+        connection_msssql
     ]

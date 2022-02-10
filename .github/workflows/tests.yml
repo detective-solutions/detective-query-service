@@ -47,6 +47,15 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      mssql:
+        image: docker pull mcr.microsoft.com/mssql/server
+        ports:
+          - 1433:1433
+        env:
+          MSSQL_DATABASE: ${{ env.SQL_DATABASE }}
+          MSSQL_USER: ${{ env.SQL_USER }}
+          MSSQL_PASSWORD: ${{ env.SQL_PASSWORD }}
+          MSSQL_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
