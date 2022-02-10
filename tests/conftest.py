@@ -17,10 +17,10 @@ def connection_mysql():
     """
 
     connection = SQLConnector(
-        host="mysql-master",
-        user="test_user",
-        password="password",
-        database="test_forest",
+        host="mysql",
+        user="root",
+        password="root",
+        database="test",
         db_type="mysql"
     )
 
@@ -71,7 +71,7 @@ def connection_msssql():
 
 
 @pytest.fixture(scope="session")
-def database_connections(connection_postgresql, connection_mysql):
+def database_connections(connection_mysql):
     return [
         # connection_postgresql
         connection_mysql
