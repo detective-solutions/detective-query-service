@@ -54,7 +54,7 @@ jobs:
         env:
           MSSQL_DATABASE: ${{ env.SQL_DATABASE }}
           MSSQL_USER: ${{ env.SQL_USER }}
-          SA_PASSWORD: hsHlanZ0283819!lsH
+          MSSQL_SA_PASSWORD: hsHlanZ0283819!lsH
           MSSQL_PID: Express
           ACCEPT_EULA: Y
     steps:
