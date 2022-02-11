@@ -49,7 +49,7 @@ jobs:
           --health-retries 5
     steps:
       - name: spin up ms sql server
-      - run: docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=test" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+        run: docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=test" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
