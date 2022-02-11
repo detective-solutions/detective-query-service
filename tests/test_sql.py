@@ -4,6 +4,7 @@ from sys import platform
 
 # import third party module
 import pytest
+import pyodbc
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
@@ -30,12 +31,16 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         port = config.get("port", 3306)
         database = config.get("database", "")
 
-        connection_string = get_connection_string(db_type, user, password, host, port, database)
-        test_engine = create_engine(connection_string)
-        if not database_exists(test_engine.url):
-            create_database(test_engine.url)
+        if db_type == "mssql":
+            connection_string = get_connection_string(db_type, user, password, host, port, database)
+            test_engine = create_engine(connection_string)
+            if not database_exists(test_engine.url):
+                create_database(test_engine.url)
 
-        test_conn = test_engine.connect()
+            test_conn = test_engine.connect()
+        else:
+            test_engine = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + host + ';PORT=' + port + ';DATABASE=' + database +';UID=' + user + ';PWD=' + password)
+            test_conn = test_engine.cursor()
         expected_result = [(1, "Sarah")]
 
         test_engine.execute(setup_queries["table"])
