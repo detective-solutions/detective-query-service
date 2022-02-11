@@ -65,12 +65,11 @@ jobs:
               tdsodbc \
               odbc-postgresql \
               libsqliteodbc \
-              ## clean up
               && apt-get clean \
               && rm -rf /var/lib/apt/lists/ \
               && rm -rf /tmp/downloaded_packages/ /tmp/*.rds  \
               && apt-get update \
-               && apt-get install --yes --no-install-recommends \
+              && apt-get install --yes --no-install-recommends \
                       apt-transport-https \
                       curl \
                       gnupg \
