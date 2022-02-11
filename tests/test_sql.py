@@ -39,7 +39,7 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
 
             test_conn = test_engine.connect()
         else:
-            test_engine = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + host + ';PORT=' + port + ';DATABASE=' + database +';UID=' + user + ';PWD=' + password)
+            test_engine = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + host + ';PORT=' + str(port) + ';DATABASE=' + database +';UID=' + user + ';PWD=' + password)
             test_conn = test_engine.cursor()
         expected_result = [(1, "Sarah")]
 
