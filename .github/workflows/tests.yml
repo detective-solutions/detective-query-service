@@ -64,24 +64,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          cd
-          wget https://raw.githubusercontent.com/tax/mssqldriver/master/unixodbc_2.3.2-1_amd64.deb
-          sudo dpkg -i unixodbc_2.3.2-1_amd64.deb
-          wget https://raw.githubusercontent.com/tax/mssqldriver/master/msodbcsql-11.0.2270.0.tar.gz
-          tar xf msodbcsql-11.0.2270.0.tar.gz
-          cd msodbcsql-11.0.2270.0
-          rm install.sh build_dm.sh
-          wget https://raw.githubusercontent.com/tax/mssqldriver/master/install.sh
-          wget https://raw.githubusercontent.com/tax/mssqldriver/master/build_dm.sh
-          bash install.sh install --accept-license --force
-          ln -s /lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /usr/lib/x86_64-linux-gnu/libcrypto.so.10;
-          ln -s /lib/x86_64-linux-gnu/libssl.so.1.0.0 /usr/lib/x86_64-linux-gnu/libssl.so.10;
-          ln -s /usr/lib/x86_64-linux-gnu/libodbcinst.so.2.0.0 /usr/lib/x86_64-linux-gnu/libodbcinst.so.1;
-          ln -s /usr/lib/x86_64-linux-gnu/libodbc.so.2.0.0 /usr/lib/x86_64-linux-gnu/libodbc.so.1
-          cd
-          rm -R msodbcsql-11.0.2270.0
-          rm msodbcsql-11.0.2270.0.tar.gz
-          rm unixodbc_2.3.2-1_amd64.deb
+          curl https://packages.microsoft.com/keys/microsoft.asc
+          curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
+          apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17 libgssapi-krb5-2 unixodbc-dev mssql-tools
           python -m pip install --upgrade pip
           pip install tox tox-gh-actions
       - name: Test with tox
