@@ -12,7 +12,7 @@ from sqlalchemy_utils import database_exists, create_database
 def get_connection_string(db_type, user, password, host, port, database):
     if db_type == 'mssql':
 
-        driver = "SQL Server" if platform.startswith("win") else "{ODBC Driver 17 for SQL Server}"
+        driver = "SQL Server" if platform.startswith("win") else "{SQL Server}"
         params = f'DRIVER={driver};SERVER={host}\service;DATABASE={database};UID={user};PWD={password}'
         return f'{db_type}+pyodbc:///?odbc_connect={params}'
     else:
@@ -39,7 +39,7 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
 
             test_conn = test_engine.connect()
         else:
-            test_engine = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + host + ';PORT=' + str(port) + ';DATABASE=' + database +';UID=' + user + ';PWD=' + password)
+            test_engine = pyodbc.connect('DRIVER={SQL Server};SERVER=' + host + ';PORT=' + str(port) + ';DATABASE=' + database + ';UID=' + user + ';PWD=' + password)
             test_conn = test_engine.cursor()
         expected_result = [(1, "Sarah")]
 
