@@ -59,29 +59,11 @@ jobs:
     steps:
       - name: Install SQL SERVER driver for linux
         run: |
-          apt-get update && apt-get install -y \
-              cron \
-              nano \
-              tdsodbc \
-              odbc-postgresql \
-              libsqliteodbc \
-              && apt-get clean \
-              && rm -rf /var/lib/apt/lists/ \
-              && rm -rf /tmp/downloaded_packages/ /tmp/*.rds  \
-              && apt-get update \
-              && apt-get install --yes --no-install-recommends \
-                      apt-transport-https \
-                      curl \
-                      gnupg \
-                      unixodbc-dev \
-               && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-               && curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-               && apt-get update \
-               && ACCEPT_EULA=Y apt-get install --yes --no-install-recommends msodbcsql17 \
-               && install2.r odbc \
-               && apt-get clean \
-               && rm -rf /var/lib/apt/lists/* \
-               && rm -rf /tmp/*```
+          apt-get update && apt-get install --yes wget gnupg2 apt-transport-https build-essential make
+          wget -O - https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+          wget -O - https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+          wget -O - https://deb.nodesource.com/setup_10.x | bash -
+          apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql unixodbc-dev nodejs
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
