@@ -18,9 +18,9 @@ def get_connection_string(db_type, user, password, host, port, database):
             TrustServerCertificate=no; \
             Connection Timeout=Inf;")
 
-        params = 'DRIVER={/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.8.so.1.1};' + f'SERVER={host};DATABASE={database};Trusted_Connection=yes;'
+        params = 'DRIVER={/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.8.so.1.1};' + f'SERVER={host};DATABASE=master;Trusted_Connection=yes;'
         return f'{db_type}+pyodbc:///?odbc_connect={params}'
-        # return f'mssql+pyodbc://{user}:{password}@{host}:{port}/'
+        # return f'mssql+pyodbc://{user}:{password}@{host}:{port}/master'
     else:
         return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
 
