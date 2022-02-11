@@ -47,16 +47,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      mssql:
-        image: mcr.microsoft.com/mssql/server:2019-latest
-        ports:
-          - 1433:1433
-        env:
-          MSSQL_DATABASE: ${{ env.SQL_DATABASE }}
-          MSSQL_USER: ${{ env.SQL_USER }}
-          MSSQL_PASSWORD: ${{ env.SQL_PASSWORD }}
-          MSSQL_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
     steps:
+      - name: spin up ms sql server
+      - run: docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=test" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
