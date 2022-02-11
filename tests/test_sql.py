@@ -31,7 +31,7 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         port = config.get("port", 3306)
         database = config.get("database", "")
 
-        if db_type == "mssql":
+        if db_type != "mssql":
             connection_string = get_connection_string(db_type, user, password, host, port, database)
             test_engine = create_engine(connection_string)
             if not database_exists(test_engine.url):
