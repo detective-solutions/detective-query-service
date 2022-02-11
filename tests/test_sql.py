@@ -17,6 +17,8 @@ def get_connection_string(db_type, user, password, host, port, database):
             Database={database};Uid={user};Pwd={password};Encrypt=yes; \
             TrustServerCertificate=no; \
             Connection Timeout=Inf;")
+
+        params = 'DRIVER={SQL Server};' + f'SERVER={host};DATABASE={database};Trusted_Connection=yes;'
         return f'{db_type}+pyodbc:///?odbc_connect={params}'
         # return f'mssql+pyodbc://{user}:{password}@{host}:{port}/'
     else:
