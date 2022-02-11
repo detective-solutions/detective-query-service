@@ -47,9 +47,27 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        ports:
+          - 1433:1433
+        env:
+          MSSQL_DATABASE: ${{ env.SQL_DATABASE }}
+          MSSQL_USER: ${{ env.SQL_USER }}
+          MSSQL_PASSWORD: ${{ env.SQL_PASSWORD }}
+          MSSQL_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
     steps:
-      - name: Install SQL SERVER for Linux
-        run: docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=your_Strong_Password' -p 1433:1433 -d microsoft/mssql-server-linux
+      - name: Install SQL SERVER driver for linux
+        run: |
+            apt-get install curl
+            apt-get install apt-transport-https
+            curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+            curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
+            apt-get update
+            apt-get install mssql-tools unixodbc-dev
+            echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+            echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+            source ~/.bashrc
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
