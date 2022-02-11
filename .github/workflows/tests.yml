@@ -54,8 +54,9 @@ jobs:
         env:
           MSSQL_DATABASE: ${{ env.SQL_DATABASE }}
           MSSQL_USER: ${{ env.SQL_USER }}
-          MSSQL_PASSWORD: ${{ env.SQL_PASSWORD }}
-          MSSQL_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
+          SA_PASSWORD: hsHlanZ0283819!lsH
+          MSSQL_PID: Express
+          ACCEPT_EULA: Y
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
