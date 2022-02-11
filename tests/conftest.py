@@ -48,7 +48,7 @@ def database_configs():
         },
         "mssql": {
             "host": "0.0.0.0",
-            "user": "test_user",
+            "user": "root",
             "password": "hsHlanZ0283819!lsH",
             "database": "testdb",
             "port": 1433,
