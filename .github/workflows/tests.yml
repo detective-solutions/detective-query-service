@@ -59,11 +59,10 @@ jobs:
     steps:
       - name: Install SQL SERVER driver for linux
         run: |
-          apt-get update && apt-get install --yes wget gnupg2 apt-transport-https build-essential make
-          wget -O - https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-          wget -O - https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
-          wget -O - https://deb.nodesource.com/setup_10.x | bash -
-          apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql unixodbc-dev nodejs
+          curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+          curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+          apt update && \
+          ACCEPT_EULA=Y apt install -y msodbcsql17
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
