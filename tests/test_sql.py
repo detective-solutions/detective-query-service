@@ -4,7 +4,6 @@ from sys import platform
 
 # import third party module
 import pytest
-import pyodbc
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
@@ -12,8 +11,12 @@ from sqlalchemy_utils import database_exists, create_database
 def get_connection_string(db_type, user, password, host, port, database):
     if db_type == 'mssql':
 
-        driver = "SQL Server" if platform.startswith("win") else "{SQL Server}"
-        params = f'DRIVER={driver};SERVER={host}\service;DATABASE={database};UID={user};PWD={password}'
+        driver = "SQL Server" if platform.startswith("win") else "{ODBC Driver 17 for SQL Server}"
+
+        params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{host},1433; \
+            Database={database};Uid={user};Pwd={password};Encrypt=yes; \
+            TrustServerCertificate=no; \
+            Connection Timeout=Inf;")
         return f'{db_type}+pyodbc:///?odbc_connect={params}'
     else:
         return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
@@ -31,16 +34,12 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         port = config.get("port", 3306)
         database = config.get("database", "")
 
-        if db_type != "mssql":
-            connection_string = get_connection_string(db_type, user, password, host, port, database)
-            test_engine = create_engine(connection_string)
-            if not database_exists(test_engine.url):
-                create_database(test_engine.url)
+        connection_string = get_connection_string(db_type, user, password, host, port, database)
+        test_engine = create_engine(connection_string)
+        if not database_exists(test_engine.url):
+            create_database(test_engine.url)
 
-            test_conn = test_engine.connect()
-        else:
-            test_engine = pyodbc.connect('DRIVER={SQL Server};SERVER=' + host + ';PORT=' + str(port) + ';DATABASE=' + database + ';UID=' + user + ';PWD=' + password)
-            test_conn = test_engine.cursor()
+        test_conn = test_engine.connect()
         expected_result = [(1, "Sarah")]
 
         test_engine.execute(setup_queries["table"])

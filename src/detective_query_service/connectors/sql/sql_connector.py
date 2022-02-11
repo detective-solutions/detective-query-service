@@ -53,7 +53,7 @@ class SQLConnector(Connector):
             params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{self.host},1433; \
             Database={self.database};Uid={self.user};Pwd={self.password};Encrypt=yes; \
             TrustServerCertificate={trust_server_certificate}; \
-            Connection Timeout=30;")
+            Connection Timeout=Inf;")
             return f'{self.db_type}+pyodbc:///?odbc_connect={params}'
         else:
             return f"{self.db_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
