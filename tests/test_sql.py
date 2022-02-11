@@ -17,7 +17,6 @@ def get_connection_string(db_type, user, password, host, port, database):
                 Database={database};Uid={user};Pwd={password};Encrypt=yes; \
                 TrustServerCertificate=no; \
                 Connection Timeout=30;")
-        # f'{db_type}+pyodbc:///?odbc_connect={params}'
         return f'{db_type}+pyodbc:///?odbc_connect={params}'
     else:
         return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
