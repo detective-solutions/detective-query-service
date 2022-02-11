@@ -38,8 +38,10 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         test_engine = create_engine(connection_string)
         if not database_exists(test_engine.url) and db_type != "mssql":
             create_database(test_engine.url)
-        elif not database_exists(f"{db_type}+pyodbc://{user}:{password}@{host}:{port}/{database}"):
-            create_database(f"{db_type}+pyodbc://{user}:{password}@{host}:{port}/{database}")
+        else:
+            assert not test_engine.connect().closed, "mssql connection cannot be established"
+        # elif not database_exists(f"{db_type}+pyodbc://{user}:{password}@{host}:{port}/{database}"):
+        #    create_database(f"{db_type}+pyodbc://{user}:{password}@{host}:{port}/{database}")
 
         test_conn = test_engine.connect()
         expected_result = [(1, "Sarah")]
