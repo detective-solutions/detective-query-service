@@ -15,7 +15,7 @@ def get_connection_string(db_type, user, password, host, port, database):
 
         params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{host},{port}; \
             Database={database};Uid={user};Pwd={password};Encrypt=yes; \
-            Trusted_Connection=yes; \
+            TrustServerCertificate=no; \
             Connection Timeout=Inf;")
 
         # params = 'DRIVER={/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.8.so.1.1};' + f'SERVER={host};DATABASE=master;Trusted_Connection=yes;'
