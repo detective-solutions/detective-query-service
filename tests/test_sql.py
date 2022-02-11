@@ -13,7 +13,7 @@ def get_connection_string(db_type, user, password, host, port, database):
 
         driver = "SQL Server" if platform.startswith("win") else "{ODBC Driver 17 for SQL Server}"
 
-        params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{host},1433; \
+        params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{host},{port}; \
             Database={database};Uid={user};Pwd={password};Encrypt=yes; \
             TrustServerCertificate=no; \
             Connection Timeout=Inf;")
