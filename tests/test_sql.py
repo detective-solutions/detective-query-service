@@ -12,11 +12,7 @@ def get_connection_string(db_type, user, password, host, port, database):
     if db_type == 'mssql':
 
         driver = "SQL Server" if platform.startswith("win") else "{ODBC Driver 17 for SQL Server}"
-
-        params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{host},{port}; \
-                Database={database};Uid={user};Pwd={password};Encrypt=yes; \
-                TrustServerCertificate=no; \
-                Connection Timeout=30;")
+        params = f'DRIVER={driver};SERVER={host}\service;DATABASE={database};UID={user};PWD={password}'
         return f'{db_type}+pyodbc:///?odbc_connect={params}'
     else:
         return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
