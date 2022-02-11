@@ -65,14 +65,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo su | apt-key add -
-          curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-          curl https://packages.microsoft.com/config/ubuntu/21.04/prod.list > /etc/apt/sources.list .d/mssql-release.list | apt-key add -
-          exit | apt-key add -
-          apt-get update | apt-key add -
-          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17 | apt-key add -
-          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools | apt-key add -
-          echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc | apt-key add -
-          source ~/.bashrc | apt-key add -
+          curl https://packages.microsoft.com/keys/microsoft.asc && curl https://packages.microsoft.com/config/ubuntu/21.04/prod.list > /etc/apt/sources.list .d/mssql-release.list && exit && apt-get update && sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17 && sudo ACCEPT_EULA=Y apt-get install -y mssql-tools && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc && source ~/.bashrc
           python -m pip install --upgrade pip
           pip install tox tox-gh-actions
       - name: Test with tox
