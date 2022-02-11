@@ -67,6 +67,7 @@ jobs:
           python -m pip install --upgrade pip
           wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
           sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/16.04/mssql-server-2017.list)"
+          cat /etc/odbcinst.ini
           sudo apt-get update
           pip install tox tox-gh-actions
       - name: Test with tox
