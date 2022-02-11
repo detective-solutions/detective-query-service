@@ -59,10 +59,13 @@ jobs:
     steps:
       - name: Install SQL SERVER driver for linux
         run: |
-          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - && \
-          curl https://packages.microsoft.com/config/debian/10/prod.list >> /etc/apt/sources.list .d/mssql-release.list  | sudo sh && \
-          apt update && \
-          ACCEPT_EULA=Y apt install -y msodbcsql17
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          curl https://packages.microsoft.com/config/ubuntu/16.04/mssql-server.list | sudo tee /etc/apt/sources.list.d/mssql-server.list
+          sudo apt-get update
+          sudo apt-get install mssql-server
+          sudo /opt/mssql/bin/mssql-conf setup
+          sudo apt-get install mssql-server-agent
+          sudo systemctl restart mssql-server.service
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
