@@ -60,7 +60,7 @@ jobs:
       mariadb:
         image: mariadb:latest
         ports:
-          - 3306:3307
+          - 3307:3306
         env:
           MARIADB_DATABASE: ${{ env.SQL_DATABASE }}
           MARIADB_USER: ${{ env.SQL_USER }}
