@@ -37,7 +37,7 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         test_conn = test_engine.connect()
         expected_result = [(1, "Sarah")]
 
-        test_engine.execute(setup_queries["table"])
+        test_conn.execute(setup_queries["table"])
         test_conn.execute(setup_queries["insert"])
         test_result = test_conn.execute(setup_queries["test"]).fetchall()
 
