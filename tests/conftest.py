@@ -13,6 +13,11 @@ def database_setup_queries():
             "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
             "test": "SELECT * FROM students LIMIT 1;"
         },
+        "mariadb": {
+            "table": "CREATE TABLE students (id int, name varchar(20));",
+            "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
+            "test": "SELECT * FROM students LIMIT 1;"
+        },
         "postgresql": {
             "table": "CREATE TABLE students (id serial PRIMARY KEY, name VARCHAR (20) UNIQUE NOT NULL);",
             "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
@@ -37,6 +42,14 @@ def database_configs():
             "database": "testdb",
             "port": 3306,
             "db_type": "mysql"
+        },
+        "mariadb": {
+            "host": "0.0.0.0",
+            "user": "test_user",
+            "password": "test",
+            "database": "testdb",
+            "port": 3307,
+            "db_type": "mariadb"
         },
         "postgresql": {
             "host": "0.0.0.0",
@@ -73,7 +86,6 @@ def connection_postgresql(database_configs):
     return connection
 
 
-# TODO: does not work on a ubuntu test instance in github actions, since ODBC driver is not installed by default
 @pytest.fixture(scope="session")
 def connection_msssql(database_configs):
     connection = SQLConnector(
@@ -83,9 +95,23 @@ def connection_msssql(database_configs):
 
 
 @pytest.fixture(scope="session")
-def database_connections(connection_mysql, connection_postgresql, connection_msssql):
+def connection_mariadb(database_configs):
+    connection = SQLConnector(
+        **database_configs.get("mariadb", "mariadb")
+    )
+    return connection
+
+
+@pytest.fixture(scope="session")
+def database_connections(
+        connection_mysql,
+        connection_postgresql,
+        connection_msssql,
+        connection_mariadb
+):
     return [
         connection_mysql,
         connection_postgresql,
-        connection_msssql
+        connection_msssql,
+        connection_mariadb
     ]

@@ -11,11 +11,11 @@ def get_database_by_uid(client: DgraphClient, xid: str) -> dict:
         query sourceConnection($number: string) {
               result (func: eq(dgraph.type, "SourceConnection")) @filter(eq(xid, $number)) {
                 xid
-                host
-                password
-                database
-                user
-                db_type
+                SourceConnection.host
+                SourceConnection.password
+                SourceConnection.database
+                SourceConnection.user
+                SourceConnection.db_type
               }
         }
     '''
