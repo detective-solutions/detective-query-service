@@ -10,17 +10,7 @@ from sqlalchemy_utils import database_exists, create_database
 
 def get_connection_string(db_type, user, password, host, port, database):
     if db_type == 'mssql':
-
-        driver = "SQL Server" if platform.startswith("win") else "{ODBC Driver 17 for SQL Server}"
-
-        params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{host},{port}; \
-            Database={database};Uid={user};Pwd={password};Encrypt=yes; \
-            TrustServerCertificate=no; \
-            Connection Timeout=Inf;")
-
-        # params = 'DRIVER={/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.8.so.1.1};' + f'SERVER={host};DATABASE=master;Trusted_Connection=yes;'
-        # return f'{db_type}+pyodbc:///?odbc_connect={params}'
-        return f"mssql+pyodbc://{user}:{password}@{host}:{port}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
+        return f"{db_type}+pyodbc://{user}:{password}@{host}:{port}/{database}?driver=ODBC+Driver+17+for+SQL+Server?ssl=true"
     else:
         return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
 
@@ -39,7 +29,7 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
 
         connection_string = get_connection_string(db_type, user, password, host, port, database)
         test_engine = create_engine(connection_string)
-        if db_type != "mssql" and not database_exists(test_engine.url):
+        if (db_type != "mssql") and (not database_exists(test_engine.url)):
             create_database(test_engine.url)
         else:
             test_engine.execute(f"CREATE DATABASE {database}")
