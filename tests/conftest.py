@@ -21,7 +21,7 @@ def database_setup_queries():
         "mssql": {
             "table": "CREATE TABLE students (id INT PRIMARY KEY, name VARCHAR (20) NOT NULL);",
             "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
-            "test": "SELECT * FROM students LIMIT 1;"
+            "test": "SELECT TOP(1) * FROM students;"
         }
 
     }
