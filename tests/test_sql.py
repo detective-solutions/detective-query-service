@@ -10,7 +10,7 @@ from sqlalchemy_utils import database_exists, create_database
 
 def get_connection_string(db_type, user, password, host, port, database):
     if db_type == 'mssql':
-        return f"{db_type}+pyodbc://{user}:{password}@{host}:{port}/{database}?driver=ODBC+Driver+17+for+SQL+Server?ssl=true"
+        return f"{db_type}+pyodbc://{user}:{password}@{host}:{port}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
     else:
         return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
 
