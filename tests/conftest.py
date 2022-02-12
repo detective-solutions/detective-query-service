@@ -6,7 +6,7 @@ from src.detective_query_service.connectors.sql.sql_connector import SQLConnecto
 
 
 @pytest.fixture(scope="session")
-def database_setup_queries():
+def sql_database_setup_queries():
     yield {
         "mysql": {
             "table": "CREATE TABLE students (id int, name varchar(20));",
@@ -33,7 +33,7 @@ def database_setup_queries():
 
 
 @pytest.fixture(scope="session")
-def database_configs():
+def sql_database_configs():
     yield {
         "mysql": {
             "host": "0.0.0.0",
@@ -71,47 +71,62 @@ def database_configs():
 
 
 @pytest.fixture(scope="session")
-def connection_mysql(database_configs):
+def connection_mysql(sql_database_configs):
     connection = SQLConnector(
-        **database_configs.get("mysql", "mysql")
+        **sql_database_configs.get("mysql", "mysql")
     )
     return connection
 
 
 @pytest.fixture(scope="session")
-def connection_postgresql(database_configs):
+def connection_postgresql(sql_database_configs):
     connection = SQLConnector(
-        **database_configs.get("postgresql", "postgresql")
+        **sql_database_configs.get("postgresql", "postgresql")
     )
     return connection
 
 
 @pytest.fixture(scope="session")
-def connection_msssql(database_configs):
+def connection_msssql(sql_database_configs):
     connection = SQLConnector(
-        **database_configs.get("mssql", "mssql")
+        **sql_database_configs.get("mssql", "mssql")
     )
     return connection
 
 
 @pytest.fixture(scope="session")
-def connection_mariadb(database_configs):
+def connection_mariadb(sql_database_configs):
     connection = SQLConnector(
-        **database_configs.get("mariadb", "mariadb")
+        **sql_database_configs.get("mariadb", "mariadb")
     )
     return connection
 
 
 @pytest.fixture(scope="session")
-def database_connections(
+def sql_database_connections(
         connection_mysql,
+        connection_mariadb,
         connection_postgresql,
         connection_msssql,
-        connection_mariadb
+
 ):
     return [
         connection_mysql,
+        connection_mariadb,
         connection_postgresql,
         connection_msssql,
-        connection_mariadb
     ]
+
+
+@pytest.fixture(scope="session")
+def nosql_database_configs():
+    yield {
+        "mongodb": {
+            "host": "0.0.0.0",
+            "user": "test_user",
+            "password": "test",
+            "database": "testdb",
+            "port": 27017,
+            "db_type": "mysql"
+        }
+    }

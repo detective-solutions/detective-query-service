@@ -12,9 +12,9 @@ def get_connection_string(db_type, user, password, host, port, database):
 
 
 @pytest.mark.parametrize("db_type", ["mysql", "postgresql", "mssql", "mariadb"])
-def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type):
-    config = database_configs.get(db_type, None)
-    setup_queries = database_setup_queries.get(db_type, None)
+def test_create_sql_dummy_data(sql_database_configs, sql_database_setup_queries, db_type):
+    config = sql_database_configs.get(db_type, None)
+    setup_queries = sql_database_setup_queries.get(db_type, None)
 
     if (config is not None) and (setup_queries is not None):
         user = config.get("user", "")
@@ -46,13 +46,13 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
         assert setup_queries is not None, f"database setup queries for {db_type} not found"
 
 
-def test_create_connection(database_connections):
-    assert not database_connections[0].connection.closed, "mysql connection cannot be established"
-    assert not database_connections[1].connection.closed, "postgresql connection cannot be established"
-    assert not database_connections[2].connection.closed, "mssql connection cannot be established"
+def test_create_connection(sql_database_connections):
+    assert not sql_database_connections[0].connection.closed, "mysql connection cannot be established"
+    assert not sql_database_connections[1].connection.closed, "postgresql connection cannot be established"
+    assert not sql_database_connections[2].connection.closed, "mssql connection cannot be established"
 
 
-def test_execute_query_with_restricted_values(database_connections):
+def test_execute_query_with_restricted_values(sql_database_connections):
     queries = [
         "CREATE DATABASE",
         "DROP TABLE IF EXISTS 'students'",
@@ -64,7 +64,7 @@ def test_execute_query_with_restricted_values(database_connections):
 
     results = list()
     expected_result = {"error": ["query tries to create, alter, show or use sys information"]}
-    for conn in database_connections:
+    for conn in sql_database_connections:
         for query in queries:
             status = expected_result == conn.execute_query(query)
             results.append(status)
@@ -72,13 +72,13 @@ def test_execute_query_with_restricted_values(database_connections):
     assert all(results), "query with restricted values can be executed"
 
 
-def test_execute_query_with_legitimate_values(database_connections, database_setup_queries):
+def test_execute_query_with_legitimate_values(sql_database_connections, sql_database_setup_queries):
     queries = [
-        values.get("test", "") for key, values in database_setup_queries.items()
+        values.get("test", "") for key, values in sql_database_setup_queries.items()
     ]
 
     results = list()
-    for ix, conn in enumerate(database_connections):
+    for ix, conn in enumerate(sql_database_connections):
         print(queries[ix])
         try:
             query_result = conn.execute_query(queries[ix])

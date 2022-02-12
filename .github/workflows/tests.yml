@@ -72,6 +72,13 @@ jobs:
           --health-interval=15s
           --health-timeout=15s
           --health-retries=5
+      mongodb:
+        image: mongo
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{ env.SQL_USER }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
