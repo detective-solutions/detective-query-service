@@ -62,9 +62,10 @@ jobs:
         ports:
           - 3307:3306
         env:
-          MARIADB_DATABASE: ${{ env.SQL_DATABASE }}
-          MARIADB_USER: ${{ env.SQL_USER }}
-          MARIADB_PASSWORD: ${{ env.SQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.SQL_DATABASE }}
+          MYSQL_USER: ${{ env.SQL_USER }}
+          MYSQL_PASSWORD: ${{ env.SQL_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ${{ env.SQL_PASSWORD }}
         options: >-
           --name=mariadb
           --health-cmd="mysqladmin ping"
