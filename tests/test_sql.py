@@ -53,8 +53,8 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
 
 def test_create_connection(database_connections):
     assert not database_connections[0].connection.closed, "mysql connection cannot be established"
-    assert not database_connections[1].connection.closed, "postgresql connection cannot be established"
-    assert not database_connections[2].connection.closed, "mssql connection cannot be established"
+    #assert not database_connections[1].connection.closed, "postgresql connection cannot be established"
+    #assert not database_connections[2].connection.closed, "mssql connection cannot be established"
 
 
 def test_execute_query_with_restricted_values(database_connections):

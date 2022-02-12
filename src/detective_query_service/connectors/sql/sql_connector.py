@@ -46,17 +46,11 @@ class SQLConnector(Connector):
         :param trust_server_certificate: whether in case of mssql the certificated should be trusted (default - no)
         :return: returns a connection address as string
         """
+        base_connection_string = f"{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
         if self.db_type == 'mssql':
-
-            driver = "SQL Server" if platform.startswith("win") else "{ODBC Driver 17 for SQL Server}"
-
-            params = urllib.parse.quote_plus(f"Driver={driver}" + f";Server=tcp:{self.host},1433; \
-            Database={self.database};Uid={self.user};Pwd={self.password};Encrypt=yes; \
-            TrustServerCertificate={trust_server_certificate}; \
-            Connection Timeout=Inf;")
-            return f'{self.db_type}+pyodbc:///?odbc_connect={params}'
+            return f"{self.db_type}+pyodbc://{base_connection_string}?driver=ODBC+Driver+17+for+SQL+Server"
         else:
-            return f"{self.db_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+            return f"{self.db_type}://{base_connection_string}"
 
     def _check_db_type_support(self, db_type: str) -> str:
         """
