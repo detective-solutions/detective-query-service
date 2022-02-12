@@ -15,7 +15,8 @@ def get_connection_string(db_type, user, password, host, port, database):
         return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
 
 
-@pytest.mark.parametrize("db_type", ["mysql", "postgresql", "mssql"])
+#  ["mysql", "postgresql", "mssql"]
+@pytest.mark.parametrize("db_type", ["mssql"])
 def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type):
     config = database_configs.get(db_type, None)
     setup_queries = database_setup_queries.get(db_type, None)
@@ -29,10 +30,10 @@ def test_create_sql_dummy_data(database_configs, database_setup_queries, db_type
 
         connection_string = get_connection_string(db_type, user, password, host, port, database)
         test_engine = create_engine(connection_string)
-        if (db_type != "mssql") and (not database_exists(test_engine.url)):
+        if not database_exists(test_engine.url):
             create_database(test_engine.url)
-        else:
-            test_engine.execute(f"CREATE DATABASE {database}")
+        if db_type == "mssql":
+            assert "testdb" in test_engine.url.database, "test db does not exist and was not created"
 
         test_conn = test_engine.connect()
         expected_result = [(1, "Sarah")]
