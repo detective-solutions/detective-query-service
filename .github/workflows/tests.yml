@@ -67,7 +67,7 @@ jobs:
           MARIADB_PASSWORD: ${{ env.SQL_PASSWORD }}
         options: >-
           --name=mariadb
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mariadb-admin ping"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
