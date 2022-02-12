@@ -1,6 +1,4 @@
 # import standard modules
-import urllib
-from sys import platform
 from typing import Dict, List
 
 # import third party modules

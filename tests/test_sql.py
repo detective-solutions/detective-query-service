@@ -1,7 +1,3 @@
-# import standard modules
-import urllib
-from sys import platform
-
 # import third party module
 import pytest
 from sqlalchemy import create_engine
