@@ -80,7 +80,7 @@ def test_execute_query_with_legitimate_values(database_connections):
     queries = [
         'SELECT * FROM students LIMIT 1',
         'SELECT * FROM students LIMIT 1',
-        'SELECT TOP(1) * FROM testdb.students;'
+        'SELECT TOP(1) * FROM students;'
     ]
 
     results = list()
