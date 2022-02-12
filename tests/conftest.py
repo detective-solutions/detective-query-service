@@ -19,7 +19,7 @@ def database_setup_queries():
             "test": "SELECT * FROM students LIMIT 1;"
         },
         "mssql": {
-            "table": "CREATE TABLE [testdb].[students] (id INT PRIMARY KEY, name VARCHAR (20) NOT NULL);",
+            "table": "CREATE TABLE students (id INT PRIMARY KEY, name VARCHAR (20) NOT NULL);",
             "insert": "INSERT INTO testdb.students (id, name) VALUES (1, 'Sarah');",
             "test": "SELECT * FROM testdb.students LIMIT 1;"
         }
