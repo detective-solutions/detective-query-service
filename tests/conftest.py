@@ -146,7 +146,7 @@ def nosql_database_setup_queries():
 @pytest.fixture(scope="session")
 def connection_mongodb(nosql_database_configs):
     connection = Connector(
-        **sql_database_configs.get("mongodb", "mongodb")
+        **nosql_database_configs.get("mongodb", "mongodb")
     )
     return connection
 
