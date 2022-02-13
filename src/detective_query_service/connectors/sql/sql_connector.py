@@ -50,7 +50,7 @@ class SQLConnector(Connector):
         if self.db_type == 'mssql':
             return f"{self.db_type}+pyodbc://{base_connection_string}?driver=ODBC+Driver+17+for+SQL+Server"
         else:
-            return f"{self.db_type}://{base_connection_string}"
+            return f"{self.db_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
 
     def _check_db_type_support(self, db_type: str) -> str:
         """
