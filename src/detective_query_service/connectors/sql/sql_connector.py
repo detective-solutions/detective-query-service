@@ -37,14 +37,13 @@ class SQLConnector(Connector):
         super().__init__(host, user, password, database, port)
 
     def __repr__(self):
-        return f"SQLConnector: {self.db_type}"
+        return f"{self._get_connection_string()}"
 
-    def _get_connection_string(self, trust_server_certificate: str = "no") -> str:
+    def _get_connection_string(self) -> str:
         """
         function to create the string of connection used by the engine. Since microsoft needs a
         special connection string it differs between mssql and other db_types provided at init level.
 
-        :param trust_server_certificate: whether in case of mssql the certificated should be trusted (default - no)
         :return: returns a connection address as string
         """
         base_connection_string = f"{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
