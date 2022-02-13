@@ -31,8 +31,8 @@ class SQLConnector(Connector):
      :param db_type: type of database as described above. Choose from (mssql, oracle, mysql and postgresql), (default - mysql)
     """
 
-    def __init__(self, host: str, user: str, password: str, database: str, port: int = 3306, db_type: str = "mysql",
-                 **kwargs):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int = 3306,
+                 db_type: str = "mysql", **kwargs):
         self.db_type = self._check_db_type_support(db_type)
         super().__init__(host, user, password, database, port)
 
@@ -50,7 +50,7 @@ class SQLConnector(Connector):
         if self.db_type == 'mssql':
             return f"{self.db_type}+pyodbc://{base_connection_string}?driver=ODBC+Driver+17+for+SQL+Server"
         else:
-            return f"{self.db_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+            return f"{self.db_type}://{base_connection_string}"
 
     def _check_db_type_support(self, db_type: str) -> str:
         """
@@ -79,6 +79,7 @@ class SQLConnector(Connector):
                 echo=True, poolclass=NullPool
             )
             self.connection = engine.connect()
+            assert not self.connection.closed, "connection could not be established"
             return True
 
         except Exception as db_exception:
