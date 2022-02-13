@@ -21,7 +21,7 @@ def test_create_mongo_dummy_data(nosql_database_configs, nosql_database_setup_qu
 
         password = urllib.parse.quote(password.encode('utf8'))
         cluster_url = f"{host}:{port}"
-        connection_string = f'mongodb+srv://{user}:{password}@{host}/'
+        connection_string = f'mongodb://{user}:{password}@{cluster_url}/'
         client = MongoClient(connection_string)
         db = client[database]
         table = db["students"]
