@@ -80,6 +80,15 @@ def connection_mysql(sql_database_configs):
 
 
 @pytest.fixture(scope="session")
+def connection_mariadb(sql_database_configs):
+    conn = connector("mariadb")
+    connection = conn(
+        **sql_database_configs.get("mariadb", "mariadb")
+    )
+    return connection
+
+
+@pytest.fixture(scope="session")
 def connection_postgresql(sql_database_configs):
     conn = connector("postgresql")
     connection = conn(
@@ -98,27 +107,18 @@ def connection_msssql(sql_database_configs):
 
 
 @pytest.fixture(scope="session")
-def connection_mariadb(sql_database_configs):
-    conn = connector("mariadb")
-    connection = conn(
-        **sql_database_configs.get("mariadb", "mariadb")
-    )
-    return connection
-
-
-@pytest.fixture(scope="session")
 def sql_database_connections(
         connection_mysql,
         connection_mariadb,
         connection_postgresql,
-        connection_msssql,
+        connection_msssql
 
 ):
     return [
         connection_mysql,
         connection_mariadb,
         connection_postgresql,
-        connection_msssql,
+        connection_msssql
     ]
 
 
@@ -159,7 +159,6 @@ def connection_mongodb(nosql_database_configs):
 @pytest.fixture(scope="session")
 def nosql_database_connections(
         connection_mongodb
-
 ):
     return [
         connection_mongodb
