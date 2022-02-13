@@ -37,7 +37,12 @@ class SQLConnector(Connector):
         super().__init__(host, user, password, database, port)
 
     def __repr__(self):
-        return f"{self._get_connection_string()} - established: {self.connection_established}"
+        if self.connection_established:
+            return "True"
+        else:
+            # return f"{self._get_connection_string()} - established: {self.connection_established}"
+            return self.__error_status
+
 
     def _get_connection_string(self) -> str:
         """
