@@ -2,7 +2,7 @@
 import pytest
 
 # import project related modules
-from src.detective_query_service.connectors.general.factory import Connector
+from src.detective_query_service.connectors.general.factory import connector
 
 
 @pytest.fixture(scope="session")
@@ -72,7 +72,8 @@ def sql_database_configs():
 
 @pytest.fixture(scope="session")
 def connection_mysql(sql_database_configs):
-    connection = Connector(
+    conn = connector("mysql")
+    connection = conn(
         **sql_database_configs.get("mysql", "mysql")
     )
     return connection
@@ -80,7 +81,8 @@ def connection_mysql(sql_database_configs):
 
 @pytest.fixture(scope="session")
 def connection_postgresql(sql_database_configs):
-    connection = Connector(
+    conn = connector("postgresql")
+    connection = conn(
         **sql_database_configs.get("postgresql", "postgresql")
     )
     return connection
@@ -88,7 +90,8 @@ def connection_postgresql(sql_database_configs):
 
 @pytest.fixture(scope="session")
 def connection_msssql(sql_database_configs):
-    connection = Connector(
+    conn = connector("mssql")
+    connection = conn(
         **sql_database_configs.get("mssql", "mssql")
     )
     return connection
@@ -96,7 +99,8 @@ def connection_msssql(sql_database_configs):
 
 @pytest.fixture(scope="session")
 def connection_mariadb(sql_database_configs):
-    connection = Connector(
+    conn = connector("mariadb")
+    connection = conn(
         **sql_database_configs.get("mariadb", "mariadb")
     )
     return connection
@@ -145,7 +149,8 @@ def nosql_database_setup_queries():
 
 @pytest.fixture(scope="session")
 def connection_mongodb(nosql_database_configs):
-    connection = Connector(
+    conn = connector("mongodb")
+    connection = conn(
         **nosql_database_configs.get("mongodb", "mongodb")
     )
     return connection
