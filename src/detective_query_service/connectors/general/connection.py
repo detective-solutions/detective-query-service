@@ -44,7 +44,7 @@ class Connector(object):
         return self.__connection
 
     @connection.setter
-    def connection(self, value) -> None:
+    def connection(self, value: Any) -> None:
         self.__connection = value
 
     def _ensure_connection(self):
