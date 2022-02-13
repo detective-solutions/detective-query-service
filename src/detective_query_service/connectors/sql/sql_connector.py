@@ -36,6 +36,9 @@ class SQLConnector(Connector):
         self.db_type = self._check_db_type_support(db_type)
         super().__init__(host, user, password, database, port)
 
+    def __repr__(self):
+        return f"SQLConnector: {self.db_type}"
+
     def _get_connection_string(self, trust_server_certificate: str = "no") -> str:
         """
         function to create the string of connection used by the engine. Since microsoft needs a

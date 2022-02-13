@@ -74,7 +74,7 @@ def sql_database_configs():
 def connection_mysql(sql_database_configs):
     conn = connector("mysql")
     connection = conn(
-        **sql_database_configs.get("mysql", "mysql")
+        **sql_database_configs["mysql"]
     )
     return connection
 
@@ -83,7 +83,7 @@ def connection_mysql(sql_database_configs):
 def connection_mariadb(sql_database_configs):
     conn = connector("mariadb")
     connection = conn(
-        **sql_database_configs.get("mariadb", "mariadb")
+        **sql_database_configs["mariadb"]
     )
     return connection
 
@@ -92,7 +92,7 @@ def connection_mariadb(sql_database_configs):
 def connection_postgresql(sql_database_configs):
     conn = connector("postgresql")
     connection = conn(
-        **sql_database_configs.get("postgresql", "postgresql")
+        **sql_database_configs["postgresql"]
     )
     return connection
 
@@ -101,7 +101,7 @@ def connection_postgresql(sql_database_configs):
 def connection_msssql(sql_database_configs):
     conn = connector("mssql")
     connection = conn(
-        **sql_database_configs.get("mssql", "mssql")
+        **sql_database_configs["mssql"]
     )
     return connection
 
