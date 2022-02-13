@@ -48,8 +48,9 @@ def test_create_sql_dummy_data(sql_database_configs, sql_database_setup_queries,
 
 def test_create_connection(sql_database_connections):
     assert not sql_database_connections[0].connection.closed, "mysql connection cannot be established"
-    assert not sql_database_connections[1].connection.closed, "postgresql connection cannot be established"
-    assert not sql_database_connections[2].connection.closed, "mssql connection cannot be established"
+    assert not sql_database_connections[1].connection.closed, "mariadb connection cannot be established"
+    assert not sql_database_connections[2].connection.closed, "postgresql connection cannot be established"
+    assert not sql_database_connections[3].connection.closed, "mssql connection cannot be established"
 
 
 def test_execute_query_with_restricted_values(sql_database_connections):
