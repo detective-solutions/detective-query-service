@@ -141,3 +141,21 @@ def nosql_database_setup_queries():
             "test": "SELECT * FROM students LIMIT 1;"
         }
     }
+
+
+@pytest.fixture(scope="session")
+def connection_mongodb(nosql_database_configs):
+    connection = Connector(
+        **sql_database_configs.get("mongodb", "mongodb")
+    )
+    return connection
+
+
+@pytest.fixture(scope="session")
+def nosql_database_connections(
+        connection_mongodb
+
+):
+    return [
+        connection_mongodb
+    ]
