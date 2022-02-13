@@ -2,7 +2,7 @@
 import pytest
 
 # import project related modules
-from src.detective_query_service.connectors.sql.sql_connector import SQLConnector
+from src.detective_query_service.connectors.general.factory import Connector
 
 
 @pytest.fixture(scope="session")
@@ -72,7 +72,7 @@ def sql_database_configs():
 
 @pytest.fixture(scope="session")
 def connection_mysql(sql_database_configs):
-    connection = SQLConnector(
+    connection = Connector(
         **sql_database_configs.get("mysql", "mysql")
     )
     return connection
@@ -80,7 +80,7 @@ def connection_mysql(sql_database_configs):
 
 @pytest.fixture(scope="session")
 def connection_postgresql(sql_database_configs):
-    connection = SQLConnector(
+    connection = Connector(
         **sql_database_configs.get("postgresql", "postgresql")
     )
     return connection
@@ -88,7 +88,7 @@ def connection_postgresql(sql_database_configs):
 
 @pytest.fixture(scope="session")
 def connection_msssql(sql_database_configs):
-    connection = SQLConnector(
+    connection = Connector(
         **sql_database_configs.get("mssql", "mssql")
     )
     return connection
@@ -96,7 +96,7 @@ def connection_msssql(sql_database_configs):
 
 @pytest.fixture(scope="session")
 def connection_mariadb(sql_database_configs):
-    connection = SQLConnector(
+    connection = Connector(
         **sql_database_configs.get("mariadb", "mariadb")
     )
     return connection
@@ -127,6 +127,17 @@ def nosql_database_configs():
             "password": "test",
             "database": "testdb",
             "port": 27017,
-            "db_type": "mysql"
+            "db_type": "mongodb"
+        }
+    }
+
+
+@pytest.fixture(scope="session")
+def nosql_database_setup_queries():
+    yield {
+        "mongodb": {
+            "table": "CREATE TABLE students (id int, name varchar(20));",
+            "insert": "INSERT INTO students (id, name) VALUES (1, 'Sarah');",
+            "test": "SELECT * FROM students LIMIT 1;"
         }
     }

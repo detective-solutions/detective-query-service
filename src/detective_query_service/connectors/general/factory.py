@@ -5,9 +5,10 @@ from detective_query_service.connectors.mongodb.mongodb_connector import MongoDB
 
 class Connector:
 
-    def __init__(self, db_type: str):
+    def __init__(self, db_type: str, **kwargs):
         self.db_type = db_type
         self.connector = self.get_type()
+        self.connector = self.connector(**kwargs)
 
     def get_type(self):
         if self.db_type in ["mysql", "postgresql", "mariadb", "mssql", "oracle"]:

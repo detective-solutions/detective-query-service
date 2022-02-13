@@ -23,10 +23,11 @@ class MongoDBConnector(Connector):
      :param cluster: clustername e.g. cluster0 as string
     """
 
-    def __init__(self, host: str, user: str, password: str, database: str, port: int = 27017, cluster="cluster0",
-                 **kwargs):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int = 27017,
+                 cluster: str = "cluster0", local: bool = False, **kwargs):
         super().__init__(host, user, password, database, port, cluster)
         self.connected_database: Any
+        self.local = local
 
     def _get_connection_string(self) -> str:
         """
@@ -36,7 +37,10 @@ class MongoDBConnector(Connector):
         """
 
         password = urllib.parse.quote(self.password.encode('utf8'))
-        return f'mongodb+srv://{self.user}:{password}@{self.cluster}.{self.host}/{self.database}'
+        if self.local:
+            return f'mongodb+srv://{self.user}:{password}@{self.host}:{self.port}/{self.database}'
+        else:
+            return f'mongodb+srv://{self.user}:{password}@{self.cluster}.{self.host}/{self.database}'
 
     def _create_connection(self) -> bool:
         """

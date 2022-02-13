@@ -89,3 +89,7 @@ def test_execute_query_with_legitimate_values(sql_database_connections, sql_data
         results.append(status)
 
     assert all(results), "not all executable queries executed successfully"
+
+
+def test_retrieve_tables_in_database(sql_database_connections, sql_database_setup_queries):
+    pass
