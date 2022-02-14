@@ -41,6 +41,7 @@ class SQLConnector(Connector):
             return "True"
         else:
             # return f"{self._get_connection_string()} - established: {self.connection_established}"
+            msg = self.__error_status.split("FATAL")[1]
             return self.__error_status
 
 
