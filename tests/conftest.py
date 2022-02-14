@@ -79,8 +79,9 @@ def sql_database_configs():
     }
 
 
-@pytest.mark.parametrize("db_type", ["mysql", "postgresql", "mssql", "mariadb"])
-def test_create_sql_dummy_data(sql_database_configs, sql_database_setup_queries, db_type):
+@pytest.fixture()
+@pytest.mark.parametrize("db_type", ["mysql", "mariadb", "postgresql", "mssql"])
+def create_sql_dummy_data(sql_database_configs, sql_database_setup_queries, db_type):
     config = sql_database_configs.get(db_type, None)
     setup_queries = sql_database_setup_queries.get(db_type, None)
 
@@ -107,13 +108,16 @@ def test_create_sql_dummy_data(sql_database_configs, sql_database_setup_queries,
         test_conn.close()
         assert connection_status is not False, "no connection established"
         assert expected_result[0][1] == test_result[0][1], "db entry does not fit"
+        yield True
     else:
         assert config is not None, f"data base configuration for {db_type} not found"
         assert setup_queries is not None, f"database setup queries for {db_type} not found"
+        yield False
 
 
 @pytest.fixture(scope="session")
-def connection_mysql(sql_database_configs):
+def connection_mysql(sql_database_configs, create_sql_dummy_data):
+    assert create_sql_dummy_data, "mysql database was not prepared"
     conn = connector("mysql")
     connection = conn(
         **sql_database_configs["mysql"]
@@ -122,7 +126,8 @@ def connection_mysql(sql_database_configs):
 
 
 @pytest.fixture(scope="session")
-def connection_mariadb(sql_database_configs):
+def connection_mariadb(sql_database_configs, create_sql_dummy_data):
+    assert create_sql_dummy_data, "mariadb database was not prepared"
     conn = connector("mariadb")
     connection = conn(
         **sql_database_configs["mariadb"]
@@ -131,7 +136,8 @@ def connection_mariadb(sql_database_configs):
 
 
 @pytest.fixture(scope="session")
-def connection_postgresql(sql_database_configs):
+def connection_postgresql(sql_database_configs, create_sql_dummy_data):
+    assert create_sql_dummy_data, "postgresql database was not prepared"
     conn = connector("postgresql")
     connection = conn(
         **sql_database_configs["postgresql"]
@@ -140,7 +146,8 @@ def connection_postgresql(sql_database_configs):
 
 
 @pytest.fixture(scope="session")
-def connection_msssql(sql_database_configs):
+def connection_msssql(sql_database_configs, create_sql_dummy_data):
+    assert create_sql_dummy_data, "mssql database was not prepared"
     conn = connector("mssql")
     connection = conn(
         **sql_database_configs["mssql"]
