@@ -1,49 +1,5 @@
 # import third party module
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
-
-
-def get_connection_string(db_type, user, password, host, port, database):
-    if db_type == 'mssql':
-        return f"{db_type}+pyodbc://{user}:{password}@{host}:{port}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
-    else:
-        return f"{db_type}://{user}:{password}@{host}:{port}/{database}"
-
-
-@pytest.mark.parametrize("db_type", ["mysql", "postgresql", "mssql", "mariadb"])
-def test_create_sql_dummy_data(sql_database_configs, sql_database_setup_queries, db_type):
-    config = sql_database_configs.get(db_type, None)
-    setup_queries = sql_database_setup_queries.get(db_type, None)
-
-    if (config is not None) and (setup_queries is not None):
-        user = config.get("user", "")
-        password = config.get("password", "")
-        host = config.get("host", "")
-        port = config.get("port", 3306)
-        database = config.get("database", "")
-
-        connection_string = get_connection_string(db_type, user, password, host, port, database)
-        test_engine = create_engine(connection_string)
-        if not database_exists(test_engine.url):
-            create_database(test_engine.url)
-        if db_type == "mssql":
-            assert "testdb" in test_engine.url.database, "test db does not exist and was not created"
-
-        test_conn = test_engine.connect()
-        expected_result = [(1, "Sarah")]
-
-        test_conn.execute(setup_queries["table"])
-        test_conn.execute(setup_queries["insert"])
-        test_result = test_conn.execute(setup_queries["test"]).fetchall()
-
-        connection_status = test_conn.close
-        test_conn.close()
-        assert connection_status is not False, "no connection established"
-        assert expected_result[0][1] == test_result[0][1], "db entry does not fit"
-    else:
-        assert config is not None, f"data base configuration for {db_type} not found"
-        assert setup_queries is not None, f"database setup queries for {db_type} not found"
 
 
 def test_create_connection(sql_database_connections):
