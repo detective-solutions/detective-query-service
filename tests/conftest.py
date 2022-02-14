@@ -41,10 +41,11 @@ def create_sql_dummy_data(sql_database_configs, sql_database_setup_queries, db_t
         test_conn.close()
         assert connection_status is not False, "no connection established"
         assert expected_result[0][1] == test_result[0][1], "db entry does not fit"
-
+        return True
     else:
         assert config is not None, f"data base configuration for {db_type} not found"
         assert setup_queries is not None, f"database setup queries for {db_type} not found"
+        return False
 
 
 @pytest.fixture(scope="session")
