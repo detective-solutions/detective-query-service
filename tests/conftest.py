@@ -79,7 +79,7 @@ def sql_database_configs():
     }
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 @pytest.mark.parametrize("db_type", ["mysql", "mariadb", "postgresql", "mssql"])
 def create_sql_dummy_data(sql_database_configs, sql_database_setup_queries, db_type):
     config = sql_database_configs.get(db_type, None)
