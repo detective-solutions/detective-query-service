@@ -95,9 +95,9 @@ class SQLConnector(Connector):
         :param query: current query tried to be executed
         :return: True if a keyword to restrict is found, False otherwise
         """
-        keywords = ["create", "alter", "show", "sys", "drop", "mysql", "insert"]
+        keywords = ["create", "alter", "show", "sys", "drop", "mysql", "insert", "admin"]
         query_keywords = query.lower().replace(".", " ").split(" ")
-        to_restrict = len(keywords) > len(set(keywords) - set(query_keywords))
+        to_restrict = any([x in query_keywords for x in keywords])
         return to_restrict
 
     def close(self):
@@ -114,7 +114,6 @@ class SQLConnector(Connector):
             if self._query_restriction(query):
                 logger.error(f"query tries to create, alter, show or use sys information: {query}")
                 result = {"error": ["query tries to create, alter, show or use sys information"]}
-                column_defs = get_column_definitions(result)
             else:
                 self._ensure_connection()
 
