@@ -18,7 +18,7 @@ def test_get_valid_column_names(test_set):
 
 @pytest.mark.parametrize("data", [
     {"test_column": [1, 2, 3, 4]},
-    {"test2column": ["a", "b", "c"]}
+    {"test(column)": ["a", "b", "c"]}
 ])
 def test_get_column_definitions(data):
     expected = [{'headerName': "test_column", 'field': "test_column", 'sortable': True, 'filter': True}]
