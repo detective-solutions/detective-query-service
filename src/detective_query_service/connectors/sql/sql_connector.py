@@ -1,5 +1,5 @@
 # import standard modules
-from typing import Dict, List
+from typing import Dict, List, Any, Tuple
 
 # import third party modules
 from sqlalchemy import text
@@ -7,9 +7,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
 # import project related modules
-from detective_query_service.logging import logger
-from detective_query_service.connectors.general.connection import Connector
+from detective_query_service.log_definition import logger
 from detective_query_service.transformers.tuples import tuple_to_json
+from detective_query_service.connectors.general.connection import Connector
+from detective_query_service.transformers.response import get_column_definitions
 
 
 class SQLConnector(Connector):
@@ -37,13 +38,7 @@ class SQLConnector(Connector):
         super().__init__(host, user, password, database, port)
 
     def __repr__(self):
-        if self.connection_established:
-            return "True"
-        else:
-            # return f"{self._get_connection_string()} - established: {self.connection_established}"
-            msg = str(self.__error_status).split("FATAL")[1]
-            return self.__error_status
-
+        return f"SQLConnector: {self.db_type}"
 
     def _get_connection_string(self) -> str:
         """
@@ -108,7 +103,7 @@ class SQLConnector(Connector):
     def close(self):
         self.connection.close()
 
-    def execute_query(self, query: str) -> Dict[str, List]:
+    def execute_query(self, query: str) -> Tuple[List[Dict], Dict[str, Any]]:
         """
         executes a given query of selection operation for the created databse connection
 
@@ -118,22 +113,26 @@ class SQLConnector(Connector):
         try:
             if self._query_restriction(query):
                 logger.error(f"query tries to create, alter, show or use sys information: {query}")
-                return {"error": ["query tries to create, alter, show or use sys information"]}
-
+                result = {"error": ["query tries to create, alter, show or use sys information"]}
+                column_defs = get_column_definitions(result)
             else:
                 self._ensure_connection()
+
                 t = text(f'''{query}''')
                 query_result = self.connection.execute(t)
-                columns = query_result.keys()
                 result = query_result.fetchall()
-                result = tuple_to_json(columns, result)
-                if type(result) == dict:
-                    return result
+                columns = query_result.keys()
+                result = tuple_to_json(list(columns), result)
 
-                else:
+                if type(result) != dict:
                     logger.error(f"fetched result is not a list of tuples for: {query}")
-                    return {"error": ["fetched result is not a list of tuples"]}
+                    result = {"error": ["not a valid query - fetched result is not a list of tuples"]}
+
+            column_defs = get_column_definitions(result)
+            return column_defs, result
 
         except Exception as db_exception:
             logger.error(str(db_exception))
-            return {"error": [str(db_exception)]}
+            result = {"error": [str(db_exception)]}
+            column_defs = get_column_definitions(result)
+            return column_defs, result

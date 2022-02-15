@@ -1,5 +1,3 @@
-# import third party module
-import pytest
 
 
 def test_create_connection(sql_database_connections):
