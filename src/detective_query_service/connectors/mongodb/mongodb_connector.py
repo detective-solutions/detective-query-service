@@ -6,7 +6,7 @@ from typing import Dict, List, Any
 from pymongo import MongoClient
 
 # import project related modules
-from detective_query_service.logging import logger
+from detective_query_service.log_definition import logger
 from detective_query_service.connectors.general.connection import Connector
 
 

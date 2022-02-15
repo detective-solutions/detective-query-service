@@ -7,7 +7,7 @@ from flask import abort, request
 from flask_restful import Resource
 
 # import project related modules
-from detective_query_service.logging import logger
+from detective_query_service.log_definition import logger
 from detective_query_service.settings import dgraph_client
 from detective_query_service.graphql.databases import get_database_by_uid
 from detective_query_service.connectors.general.standard import Connector
