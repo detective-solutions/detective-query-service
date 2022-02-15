@@ -5,7 +5,7 @@ import pytest
 from detective_query_service.transformers.response import get_valid_column_names, get_column_definitions
 
 
-@pytest.mark.parameterize("test_set", [
+@pytest.mark.parametrize("test_set", [
     (["Banana_split"], ["Banana_split"]),
     (["Banana(split"], ["Banana_split"]),
     (["82 Banana*split"], ["Banana_split"])
