@@ -17,4 +17,4 @@ print(
         database="fkutbowf",
         db_type="postgresql",
         port=5432
-    ).execute_query(query2))
+    ).execute_query('''SHOW DATABASES'''))
