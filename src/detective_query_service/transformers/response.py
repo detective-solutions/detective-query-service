@@ -1,11 +1,16 @@
+# import standard modules
+import re
 
 
 def get_valid_column_names(column_names: list) -> list:
     new_names = list()
     for column in column_names:
         column = column.lstrip('0123456789.- ')
-        column = ''.join(x if x not in r"[ \ ( \ [ ] . * ? [ \ ) \ ] ]".split(" ")
+        special_symbols = r"[ \ ( \ [ ] . * ? [ \ ) \ ] ]".split(" ")
+        column = ''.join(x if x not in special_symbols
                          else "_" for x in column.split(" "))
+        for sym in special_symbols:
+            column = column.replace(sym, "_")
         column = column[:-1] if column.endswith("_") else column
         new_names.append(column)
 

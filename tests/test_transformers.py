@@ -12,8 +12,8 @@ from detective_query_service.transformers.response import get_valid_column_names
 ])
 def test_get_valid_column_names(test_set):
     test_values, expected_result = test_set
-    msg = f"{test_values} does not match {expected_result}"
-    assert get_valid_column_names(test_values) == expected_result, msg
+    result = get_valid_column_names(test_values)
+    assert result == expected_result, f"{result} does not match {expected_result}"
 
 
 @pytest.mark.parametrize("data", [

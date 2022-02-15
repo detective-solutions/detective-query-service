@@ -18,10 +18,7 @@ def test_execute_query_with_restricted_values(sql_database_connections):
     ]
 
     results = list()
-    expected_result = (
-        [{'headerName': 'error', 'field': 'error', 'sortable': True, 'filter': True}],
-        {"error": ["query tries to create, alter, show or use sys information"]}
-    )
+    expected_result = {"error": ["query tries to create, alter, show or use sys information"]}
     for conn in sql_database_connections:
         for query in queries:
             status = expected_result == conn.execute_query(query)[1]
