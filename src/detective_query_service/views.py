@@ -44,8 +44,8 @@ class DataQuery(Resource):
         global conn
         try:
             query = json.loads(request.data)["query"]
-            results = conn.execute_query(query)
-            return {"data": results}
+            schema, data = conn.execute_query(query)
+            return {"query": query, "schema": schema, "data": data}
 
         except KeyError:
             abort(400, message="query not provided in payload")

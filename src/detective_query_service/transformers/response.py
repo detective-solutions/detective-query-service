@@ -1,5 +1,3 @@
-# import standard modules
-import re
 
 
 def get_valid_column_names(column_names: list) -> list:
