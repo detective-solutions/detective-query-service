@@ -3,7 +3,7 @@ from detective_query_service.connectors.sql.sql_connector import SQLConnector
 from detective_query_service.connectors.mongodb.mongodb_connector import MongoDBConnector
 
 
-def connector(db_type: str):
+def connector(db_type: str, **kwargs):
     """
     factory pattern selecting the right connector for a given database type
 
@@ -21,8 +21,8 @@ def connector(db_type: str):
     :return: Class Object of relevant connector
     """
     if db_type in ["mysql", "postgresql", "mariadb", "mssql", "oracle"]:
-        return SQLConnector
+        return SQLConnector(db_type=db_type, **kwargs)
     elif db_type == "mongodb":
-        return MongoDBConnector
+        return MongoDBConnector(db_type=db_type, **kwargs)
     else:
-        return SQLConnector
+        return SQLConnector(db_type=db_type, **kwargs)
