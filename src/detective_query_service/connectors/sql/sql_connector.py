@@ -3,8 +3,8 @@ from typing import Dict, List, Any, Tuple
 
 # import third party modules
 from sqlalchemy import text
-from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
+from sqlalchemy import create_engine, inspect
 
 # import project related modules
 from detective_query_service.log_definition import logger
@@ -102,6 +102,43 @@ class SQLConnector(Connector):
 
     def close(self):
         self.connection.close()
+
+    def crawl_database(self, database_xid: str) -> dict:
+        """
+        creates a database snapshot of the connected source and database
+
+        :param database_xid: dgraph xid identifier of the database
+        :return: database connection details with table information
+        """
+        
+        source_config = {
+            "xid": database_xid,
+            "host": self.host,
+            "port": self.port,
+            "db_type": self.db_type,
+            "user": self.user,
+            "password": self.password,
+            "database": self.database
+        }
+
+        engine = self.connection
+        inspector = inspect(self.connection)
+        result = source_config
+        result["tables"] = list()
+
+        for table_name in inspector.get_table_names():
+            schema = dict()
+            schema["tableName"] = table_name
+            schema["tableSchema"] = list()
+            for column in inspector.get_columns(table_name):
+                schema["tableSchema"].append(
+                    {
+                        "columnName": column["name"],
+                        "columnType": str(column["type"])
+                    }
+                )
+            result["tables"].append(schema)
+        return result
 
     def execute_query(self, query: str) -> Tuple[List[Dict], Dict[str, Any]]:
         """

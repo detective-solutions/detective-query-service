@@ -9,9 +9,9 @@ from kafka import KafkaConsumer
 from detective_query_service.settings import KAFKA_HOST
 from detective_query_service.log_definition import logger
 from detective_query_service.service.producer import query_producer
-from detective_query_service.events.event_type import QueryEvent
 from detective_query_service.connectors.general.factory import connector
 from detective_query_service.graphql.databases import get_source_by_table_uid
+from detective_query_service.events.event_type import QueryEvent, SourceSnapshot
 from detective_query_service.transformers.query import transform_generic_to_specific_selection_query
 
 
@@ -29,8 +29,9 @@ for message in query_consumer:
     message = message.value
 
     db_configs = get_source_by_table_uid(table_xid=message.get("source"))
+    event_type = message.get("event_type")
 
-    if message.get("event_type") == "find_columns_first":
+    if event_type == "find_columns_first":
         columns_from_tables = list()
         for i, config in enumerate(db_configs["result"]):
 
@@ -43,14 +44,41 @@ for message in query_consumer:
             case=follow_event.get("case", ""),
             event_type="general",
             source=follow_event.get("source", list()),
-            query=[transform_generic_to_specific_selection_query(follow_event.get("query")[0], columns_from_tables)],
+            query=[
+                transform_generic_to_specific_selection_query(
+                    follow_event.get("query")[0],
+                    columns_from_tables
+                )
+            ],
             groups=follow_event.get("groups", list()),
             follow_query_event=dict()
         )
         query_producer.send('masking', value=asdict(data))
         logger.info(f"send general query event for case {follow_event.get('case', '')}")
 
-    elif message.get("event_type") == "general":
+    elif event_type == "general":
         print("general", message)
         # result = {"query": message.get("query")[i], "schema": schema, "data": data}
         # query_producer.send('', value=asdict(data))
+
+    elif event_type == "source_crawl":
+        if message.get("source", dict()).get("host") == "dumbo.db.elephantsql.com":
+            config = message.get("source")
+            conn = connector(**config)
+            snapshot = conn.crawl_database(config.get("xid"))
+
+            data = SourceSnapshot(
+                tenant=config.get("tenant", ""),
+                source=config.get("xid", ""),
+                snapshot=snapshot
+            )
+
+            query_producer.send('version-control', value=asdict(data))
+            logger.info(f"send crawl event results for source {config.get('xid', '')}")
+        
+        
+        
+        
+
+
+
