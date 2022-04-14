@@ -5,7 +5,7 @@ from dataclasses import dataclass
 @dataclass(frozen=True, order=True)
 class QueryEvent:
     case: str
-    event_type: str  # general, find_columns_first, source_crawl
+    event_type: str  # general, find_columns_first
     query: list  # order: query
     source: list
     groups: list

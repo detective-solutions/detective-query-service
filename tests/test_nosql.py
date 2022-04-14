@@ -8,32 +8,32 @@ from pymongo import MongoClient
 # from src.detective_query_service.connectors.mongodb.mongodb_connector import MongoDBConnector
 
 
-def test_create_mongo_dummy_data(nosql_database_configs, nosql_database_setup_queries):
-    config = nosql_database_configs.get("mongodb", None)
-    setup_queries = nosql_database_setup_queries.get("mongodb", None)
+#def test_create_mongo_dummy_data(nosql_database_configs, nosql_database_setup_queries):
+#    config = nosql_database_configs.get("mongodb", None)
+#    setup_queries = nosql_database_setup_queries.get("mongodb", None)
 
-    if (config is not None) and (setup_queries is not None):
-        user = config.get("user", "")
-        password = config.get("password", "")
-        host = config.get("host", "")
-        port = config.get("port", 3306)
-        database = config.get("database", "")
+#    if (config is not None) and (setup_queries is not None):
+#        user = config.get("user", "")
+#        password = config.get("password", "")
+#        host = config.get("host", "")
+#        port = config.get("port", 3306)
+#        database = config.get("database", "")
 
-        password = urllib.parse.quote(password.encode('utf8'))
-        cluster_url = f"{host}:{port}"
-        connection_string = f'mongodb://{user}:{password}@{cluster_url}/'
-        client = MongoClient(connection_string)
-        db = client[database]
-        table = db["students"]
+#        password = urllib.parse.quote(password.encode('utf8'))
+#        cluster_url = f"{host}:{port}"
+#        connection_string = f'mongodb://{user}:{password}@{cluster_url}/'
+#        client = MongoClient(connection_string)
+#        db = client[database]
+#        table = db["students"]
 
-        data = {
-            "_id": 1,
-            "name": "Sarah"
-        }
+#        data = {
+#            "_id": 1,
+#            "name": "Sarah"
+#        }
 
-        table.insert_one(data)
+#        table.insert_one(data)
 
-        assert client.closed is not True, "mongo db connection might not be established"
+#        assert client.closed is not True, "mongo db connection might not be established"
 
 
 def test_create_mongo_connection(nosql_database_connections):

@@ -25,7 +25,7 @@ query_consumer = KafkaConsumer(
 )
 
 for message in query_consumer:
-
+    
     message = message.value
 
     db_configs = get_source_by_table_uid(table_xid=message.get("source"))
