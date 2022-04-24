@@ -62,17 +62,18 @@ for message in query_consumer:
         # query_producer.send('', value=asdict(data))
 
     elif event_type == "source_crawl":
-        if message.get("source", dict()).get("host") == "dumbo.db.elephantsql.com":
+        if message.get("source", dict()).get("xid") == "69fd6ba6-aec2-4acc-a8c7-a74974d55b63":
             config = message.get("source")
+            tenant = message.get("tenant")
             conn = connector(**config)
             snapshot = conn.crawl_database(config.get("xid"))
 
             data = SourceSnapshot(
-                tenant=config.get("tenant", ""),
-                source=config.get("xid", ""),
+                tenant=tenant,
+                source=config.get("xid"),
                 snapshot=snapshot
             )
-
+            print("send: ", asdict(data))
             query_producer.send('version-control', value=asdict(data))
             logger.info(f"send crawl event results for source {config.get('xid', '')}")
         
