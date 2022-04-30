@@ -21,10 +21,13 @@ def get_source_by_table_uid(table_xid: list) -> dict:
             }
         }
     '''
+
     res = execute_query(client=dgraph_client, query=query, variables=variables)
     if type(res) == dict:
         query_result = res
-        query_result = {"result": [x.get("source")[0] for x in query_result["result"]]}
+
+        # TODO: Check if it works with version control - since ("source")[0] does not work with query request
+        query_result = {"result": [x.get("source") for x in query_result["result"]]}
     else:
         query_result = {"error": ["query was not successful"]}
     return query_result

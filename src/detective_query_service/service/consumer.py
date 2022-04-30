@@ -58,8 +58,13 @@ for message in query_consumer:
 
     elif event_type == "general":
         print("general", message)
-        # result = {"query": message.get("query")[i], "schema": schema, "data": data}
-        # query_producer.send('', value=asdict(data))
+        for i, config in enumerate(db_configs["result"]):
+
+            conn = connector(**config)
+            schema, data = conn.execute_query(message.get("query")[i])
+
+            result = {"query": message.get("query")[i], "schema": schema, "data": data}
+            query_producer.send('casefile', value=result)
 
     elif event_type == "source_crawl":
         if message.get("source", dict()).get("xid") == "69fd6ba6-aec2-4acc-a8c7-a74974d55b63":
