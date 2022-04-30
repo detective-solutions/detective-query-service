@@ -21,11 +21,12 @@ query_consumer = KafkaConsumer(
     auto_offset_reset='earliest',
     enable_auto_commit=True,
     group_id='query-service',
-    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+    value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+    api_version=(0, 10, 2)
 )
 
 for message in query_consumer:
-    
+
     message = message.value
 
     db_configs = get_source_by_table_uid(table_xid=message.get("source"))
@@ -81,10 +82,10 @@ for message in query_consumer:
             print("send: ", asdict(data))
             query_producer.send('version-control', value=asdict(data))
             logger.info(f"send crawl event results for source {config.get('xid', '')}")
-        
-        
-        
-        
+
+
+
+
 
 
 

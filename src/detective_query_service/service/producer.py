@@ -8,5 +8,6 @@ from detective_query_service.settings import KAFKA_HOST
 
 query_producer = KafkaProducer(
     bootstrap_servers=[KAFKA_HOST],
-    value_serializer=lambda x: json.dumps(x).encode('utf-8')
+    value_serializer=lambda x: json.dumps(x).encode('utf-8'),
+    api_version=(0, 10, 2)
 )
