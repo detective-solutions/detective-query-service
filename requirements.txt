@@ -7,3 +7,4 @@ pyodbc==4.0.32
 pymongo==4.0.1
 dnspython==2.2.0
 kafka-python==2.0.2
+python-dotenv==0.20.0
