@@ -12,6 +12,4 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 RUN pip install -e .
 
-EXPOSE 7798
-
 CMD ["python", "src/detective_query_service/service/consumer.py" ]

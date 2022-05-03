@@ -6,7 +6,7 @@ from dataclasses import asdict
 from kafka import KafkaConsumer
 
 # import project related modules
-from detective_query_service.settings import KAFKA_HOST
+from detective_query_service.settings import KAFKA_SERVER
 from detective_query_service.log_definition import logger
 from detective_query_service.service.producer import query_producer
 from detective_query_service.connectors.general.factory import connector
@@ -17,7 +17,7 @@ from detective_query_service.transformers.query import transform_generic_to_spec
 
 query_consumer = KafkaConsumer(
     'query_execution',
-    bootstrap_servers=[KAFKA_HOST],
+    bootstrap_servers=[KAFKA_SERVER],
     auto_offset_reset='earliest',
     enable_auto_commit=True,
     group_id='query-service',
