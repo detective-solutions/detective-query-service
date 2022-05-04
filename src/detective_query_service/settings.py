@@ -21,5 +21,5 @@ KAFKA_SERVER = f"{KAFKA_HOST}:{KAFKA_PORT}"
 
 
 # set dgraph connection
-dgraph_client_stub = pydgraph.DgraphClientStub(DGRAPH_HOST)
+dgraph_client_stub = pydgraph.DgraphClientStub(DGRAPH_SERVER)
 dgraph_client = pydgraph.DgraphClient(dgraph_client_stub)
