@@ -16,12 +16,12 @@ from detective_query_service.transformers.query import transform_generic_to_spec
 
 
 query_consumer = KafkaConsumer(
-    'query_execution',
+    "query_execution",
     bootstrap_servers=[KAFKA_SERVER],
-    auto_offset_reset='earliest',
+    auto_offset_reset="earliest",
     enable_auto_commit=True,
-    group_id='query-service',
-    value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+    group_id="query-service",
+    value_deserializer=lambda x: json.loads(x.decode("utf-8")),
     api_version=(0, 10, 2)
 )
 
@@ -54,7 +54,7 @@ for message in query_consumer:
             groups=follow_event.get("groups", list()),
             follow_query_event=dict()
         )
-        query_producer.send('masking', value=asdict(data))
+        query_producer.send("masking", value=asdict(data))
         logger.info(f"send general query event for case {follow_event.get('case', '')}")
 
     elif event_type == "general":
@@ -65,7 +65,7 @@ for message in query_consumer:
             schema, data = conn.execute_query(message.get("query")[i])
 
             result = {"query": message.get("query")[i], "schema": schema, "data": data}
-            query_producer.send('casefile', value=result)
+            query_producer.send("casefile", value=result)
 
     elif event_type == "source_crawl":
         if message.get("source", dict()).get("xid") == "69fd6ba6-aec2-4acc-a8c7-a74974d55b63":
@@ -80,7 +80,7 @@ for message in query_consumer:
                 snapshot=snapshot
             )
             print("send: ", asdict(data))
-            query_producer.send('version-control', value=asdict(data))
+            query_producer.send("version-control", value=asdict(data))
             logger.info(f"send crawl event results for source {config.get('xid', '')}")
 
 
