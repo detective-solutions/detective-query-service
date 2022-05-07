@@ -1,5 +1,6 @@
 # import standard modules
 import json
+import pandas as pd
 from decimal import Decimal
 
 
@@ -19,4 +20,6 @@ def tuple_to_json(keys, tuple_list):
 
     results = json.dumps(results, cls=DecimalEncoder)
     results = json.loads(results)
+
+    results = json.loads(pd.DataFrame(results).to_json(orient="records"))
     return results
