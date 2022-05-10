@@ -110,7 +110,7 @@ class SQLConnector(Connector):
         :param database_xid: dgraph xid identifier of the database
         :return: database connection details with table information
         """
-        
+
         source_config = {
             "xid": database_xid,
             "host": self.host,
@@ -160,11 +160,16 @@ class SQLConnector(Connector):
                 columns = query_result.keys()
                 result = tuple_to_json(list(columns), result)
 
-                if type(result) != dict:
+                if type(result) != list:
                     logger.error(f"fetched result is not a list of tuples for: {query}")
                     result = {"error": ["not a valid query - fetched result is not a list of tuples"]}
 
+            logger.info(f"got results of type: {type(result)} - {result}")
+
             column_defs = get_column_definitions(result)
+
+            logger.info(f"created column_defs: {column_defs}")
+            logger.info(f"created rows: {result}")
             return column_defs, result
 
         except Exception as db_exception:
