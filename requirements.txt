@@ -8,4 +8,6 @@ pymongo==4.0.1
 dnspython==2.2.0
 kafka-python==2.0.2
 python-dotenv==0.20.0
-pandas
+trino==0.313.0
+pandas==1.4.2
+python-dotenv==0.20.0

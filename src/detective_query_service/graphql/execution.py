@@ -14,10 +14,10 @@ def execute_query(client: DgraphClient, query: str, variables: dict) -> dict:
             query_result = res
         else:
             query_result = {"error": ["query result was not a json object"]}
+        txn.discard()
+        return query_result
 
     except AbortedError as error:
         query_result = {"error": [error]}
-
-    finally:
         txn.discard()
         return query_result
