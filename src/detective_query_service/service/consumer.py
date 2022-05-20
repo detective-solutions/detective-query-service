@@ -35,26 +35,34 @@ for message in query_consumer:
     for i, config in enumerate(db_configs["result"]):
         if event_type == "find_columns_first":
             columns_from_tables = list()
-
-            schema, data = execute_query("elephant", "public", message.get("query")[0])
-            columns_from_tables.extend(data.get("column_name"))
-
             follow_event = message.get("follow_query_event")
-            data = QueryEvent(
-                case=follow_event.get("case", ""),
-                event_type="general",
-                source=follow_event.get("source", list()),
-                query=[
-                    transform_generic_to_specific_selection_query(
-                        follow_event.get("query")[0],
-                        columns_from_tables
-                    )
-                ],
-                groups=follow_event.get("groups", list()),
-                follow_query_event=dict()
-            )
-            query_producer.send("masking", value=asdict(data))
-            logger.info(f"send general query event for case {follow_event.get('case', '')}")
+
+            # TODO: replace elephant and public with "real" values from dgraph
+            # TODO: find out how it works with no sql
+            # TODO: check blob stores for files
+            schema, data = execute_query("elephant", "public", message.get("query")[0])
+            if "error" not in data.columns.tolist():
+                columns_from_tables.extend(data.Column.tolist())
+
+                data = QueryEvent(
+                    case=follow_event.get("case", ""),
+                    event_type="general",
+                    source=follow_event.get("source", list()),
+                    query=[
+                        transform_generic_to_specific_selection_query(
+                            follow_event.get("query")[0],
+                            columns_from_tables
+                        )
+                    ],
+                    groups=follow_event.get("groups", list()),
+                    follow_query_event=dict()
+                )
+
+                query_producer.send("masking", value=asdict(data))
+                logger.info(f"send general query event for case {follow_event.get('case', '')}")
+            else:
+                query_producer.send("casefile", value=asdict(data))
+                logger.info(f"query was not successful {follow_event.get('case', '')}")
 
         elif event_type == "general":
             print("general", message)

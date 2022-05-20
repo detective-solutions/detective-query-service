@@ -1,3 +1,6 @@
+# import standards modules
+import os
+
 # import third party modules
 import pandas as pd
 from trino.dbapi import connect
@@ -14,14 +17,22 @@ def transform_generic_to_specific_selection_query(query: str, columns: list) -> 
 
 
 def execute_query(catalog: str, schema: str, query: str) -> tuple:
-    conn = connect(
-        host="localhost",
-        port="8080",
-        user="root",
-        catalog=catalog,
-        schema=schema
-    )
+    print(f"execute: {query}")
+    try:
+        conn = connect(
+            host=os.getenv("TRINO_SERVICE_NAME"),
+            port=os.getenv("TRINO_PORT"),
+            user="root",
+            catalog=catalog,
+            schema=schema
+        )
 
-    data = pd.read_sql(query, conn)
-    schema = get_column_definitions(data)
+        data = pd.read_sql(query, conn)
+        schema = get_column_definitions(data)
+        data = data.to_json(orient="records")
+
+    except Exception as e:
+        data = {"error": [repr(e)]}
+        schema = {'headerName': "error", 'field': "error", 'sortable': True, 'filter': True}
+
     return schema, data
