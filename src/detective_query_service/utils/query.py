@@ -1,5 +1,6 @@
 # import standards modules
 import os
+import json
 
 # import third party modules
 import pandas as pd
@@ -17,7 +18,7 @@ def transform_generic_to_specific_selection_query(query: str, columns: list) -> 
 
 
 def execute_query(catalog: str, schema: str, query: str) -> tuple:
-    print(f"execute: {query}")
+
     try:
         conn = connect(
             host=os.getenv("TRINO_SERVICE_NAME"),
@@ -29,10 +30,9 @@ def execute_query(catalog: str, schema: str, query: str) -> tuple:
 
         data = pd.read_sql(query, conn)
         schema = get_column_definitions(data)
-        data = data.to_json(orient="records")
 
     except Exception as e:
-        data = {"error": [repr(e)]}
+        data = pd.DataFrame({"error": [repr(e)]})
         schema = {'headerName': "error", 'field': "error", 'sortable': True, 'filter': True}
 
     return schema, data

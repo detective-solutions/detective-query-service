@@ -11,12 +11,14 @@ def get_source_by_table_uid(table_xid: list) -> dict:
         query tables({outer_params})''' + '''{result(func: eq(dgraph.type, "TableObject"))
         @filter(eq(TableObject.xid, [''' + f'''{inner_params}''' + '''])) {
                 source: TableObject.dataSource {
+                    name: SourceConnection.name
                     host: SourceConnection.host
                     port: SourceConnection.port
+                    user: SourceConnection.user
                     password: SourceConnection.password
                     database: SourceConnection.database
-                    user: SourceConnection.user
-                    db_type: SourceConnection.db_type
+                    schema: SourceConnection.databaseSchema
+                    connectorName: SourceConnection.connectorName
                 }
             }
         }
@@ -25,8 +27,6 @@ def get_source_by_table_uid(table_xid: list) -> dict:
     res = execute_query(client=dgraph_client, query=query, variables=variables)
     if type(res) == dict:
         query_result = res
-
-        # TODO: Check if it works with version control - since ("source")[0] does not work with query request
         query_result = {"result": [x.get("source") for x in query_result["result"]]}
     else:
         query_result = {"error": ["query was not successful"]}
