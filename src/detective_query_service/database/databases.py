@@ -1,9 +1,10 @@
 # import project related module
 from detective_query_service.settings import dgraph_client
-from detective_query_service.graphql.execution import execute_query
+from detective_query_service.database.execution import execute_query
+from detective_query_service.pydataobject.dgraph_type import DataBaseConfig
 
 
-def get_source_by_table_uid(table_xid: list) -> dict:
+def get_source_by_table_xid(table_xid: list) -> dict:
     inner_params = ", ".join(f"$source{i}" for i in range(len(table_xid)))
     outer_params = ", ".join(f"$source{i}: string" for i in range(len(table_xid)))
     variables = {f"$source{i}": s for i, s in enumerate(table_xid)}
@@ -17,7 +18,7 @@ def get_source_by_table_uid(table_xid: list) -> dict:
                     user: SourceConnection.user
                     password: SourceConnection.password
                     database: SourceConnection.database
-                    schema: SourceConnection.databaseSchema
+                    databaseSchema: SourceConnection.databaseSchema
                     connectorName: SourceConnection.connectorName
                 }
             }

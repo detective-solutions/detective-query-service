@@ -8,12 +8,13 @@ from operator import itemgetter
 import pandas as pd
 
 # import project related modules
-from detective_query_service.log_definition import logger
-from detective_query_service.events.event_type import QueryEvent
-from detective_query_service.utils.query import transform_generic_to_specific_selection_query
+from detective_query_service.pydataobject.event_type import QueryEvent
+from detective_query_service.service.event import subscribe, post_event
+from detective_query_service.pydataobject.dgraph_type import DataBaseConfig
+from detective_query_service.utils.query import transform_generic_to_specific_selection_query, execute_query
 
 
-class Operation:
+class QueryOperation:
 
     @classmethod
     def missing_definition_event(cls, requirement_list: list) -> Tuple[str, Any]:
@@ -61,16 +62,31 @@ class Operation:
             return "casefile", json.loads(data.to_json(orient="records"))
 
     @classmethod
-    def general_query_event(cls, data: pd.DataFrame, schema: dict, message: dict,
-                            config: dict, enumerator: int) -> Tuple[str, Any]:
+    def general_query_event(cls, config: DataBaseConfig, event: QueryEvent):
+        schema, data = execute_query(config, event)
         result = {
-            "query": message.get("query")[enumerator],
+            "query": event.body.query[0],
             "schema": schema,
             "data": json.loads(data.to_json(orient="records"))
         }
+        post_event("post_query_event", {"topic": "casefile", "payload": result, "context": event.context})
+        # print(json.dumps(result, indent=4))
 
-        logger.info(f"general_query_event for {message.get('case', '')} executed")
-        return "casefile", result
+    @classmethod
+    def run_query(cls, request: dict) -> None:
+        event = request.get("event")
+        config = request.get("config")
+        query_type = event.body.queryType
+
+        for db_conf in config:
+            if db_conf.valid & (query_type == "columnQuery"):
+                cls.find_columns_first_event(db_conf, event)
+            elif db_conf.valid & (query_type == "sqlQuery"):
+                cls.general_query_event(db_conf, event)
+
+
+def setup_query_listeners():
+    subscribe("query_execution", QueryOperation.run_query)
 
         # elif event_type == "source_crawl":
         #    if message.get("source", dict()).get("xid") == "69fd6ba6-aec2-4acc-a8c7-a74974d55b63":
