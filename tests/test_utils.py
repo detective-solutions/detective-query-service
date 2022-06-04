@@ -1,9 +1,6 @@
 # import standard modules
 import json
 
-# import third party modules
-import pytest
-
 # import project related modules
 from detective_query_service.utils.tuples import tuple_to_json
 from detective_query_service.utils.response import get_column_definitions

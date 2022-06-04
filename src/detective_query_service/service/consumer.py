@@ -25,8 +25,12 @@ consumer = KafkaConsumer(
 initialize_listeners()
 for message in consumer:
 
-    message = message.value
-    event = EventOperation.read_query_event(message)
-    db_configs = get_source_by_table_xid(table_xid=event.body.tableId)
-    db_configs = EventOperation.read_database_config(event.context, db_configs.get("result", {}))
-    post_event("query_execution", {"event": event, "config": db_configs})
+    try:
+        message = message.value
+        event = EventOperation.read_query_event(message)
+        config_list = get_source_by_table_xid(table_xid=event.body.tableId)
+        db_configs = EventOperation.read_database_config(event.context, config_list.get("result", {}))
+        post_event("query_execution", {"event": event, "config": db_configs})
+
+    except Exception:
+        post_event("invalid_message", None)

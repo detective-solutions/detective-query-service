@@ -1,55 +1,41 @@
 # import standard modules
 import json
-import logging
-from operator import itemgetter
-from typing import Tuple, Any, List
-
-# import third party modules
-import pandas as pd
+from typing import List
 
 # import project related modules
-from detective_query_service.pydataobject.event_type import QueryEvent, Context
 from detective_query_service.service.event import subscribe, post_event
 from detective_query_service.pydataobject.dgraph_type import DataBaseConfig
+from detective_query_service.pydataobject.event_type import QueryEvent, Context
 from detective_query_service.utils.query import transform_generic_to_specific_selection_query, execute_query
 
 
 class QueryOperation:
 
     @classmethod
-    def missing_definition_event(cls, requirement_list: list) -> Tuple[str, Any]:
-        index_title = ["name", "database schema", "query"]
-        indexes = [ix for ix in requirement_list if ix is None]
-        data = pd.DataFrame({"error": list(itemgetter(*indexes)(index_title))})
-        schema = [{'headerName': "error", 'field': "error", 'sortable': True, 'filter': True}]
-
-        result = {
-            "query": "",
-            "schema": schema,
-            "data": json.loads(data.to_json(orient="records"))
-        }
-
-        return "casefiles", result
-
-    @classmethod
     def insert_column_names(cls, config: DataBaseConfig, event: QueryEvent) -> None:
+        """
+        function to replace the wildcard character in a sql statement and replaces it with explict column names.
+        It will update the provided QueryEvent and creates a new one with the assigned follow event
+        :param config: database configuration used to query against trino
+        :param event: QueryEvent to be modified
+        """
         try:
             schema, data = execute_query(config, event)
             follow_event = event.body.followEvent
 
             if "error" not in data.columns.tolist():
-                follow_event.query = [
-                    transform_generic_to_specific_selection_query(
-                        follow_event.query[0],
-                        data.Column.tolist()
-                    )
-                ]
-
-                logging.info(f"find_columns_first_event for {event.context.casefileId} executed")
-                post_event("kafka_masking_response", {"body": follow_event, "context": event.context})
+                if follow_event is not None:
+                    follow_event.query = [
+                        transform_generic_to_specific_selection_query(
+                            follow_event.query[0],
+                            data.Column.tolist()
+                        )
+                    ]
+                    post_event("kafka_masking_response", {"body": follow_event, "context": event.context})
+                else:
+                    post_event("missing_follow_event", event)
 
             else:
-                logging.info(f"query was not successful {event.context.casefileId}")
                 cls.construct_casefile_response(
                     query_type=event.body.queryType,
                     query=event.body.query,
@@ -58,11 +44,16 @@ class QueryOperation:
                     context=event.context
                 )
 
-        except Exception as e:
-            logging.error(f"insert_column_names could not be executed with context {event.context.dict()} with {e}")
+        except Exception:
+            post_event("insert_column_name_error", event.context)
 
     @classmethod
     def general_query_event(cls, config: DataBaseConfig, event: QueryEvent) -> None:
+        """
+        function to execute a QueryEvent against Trino
+        :param config: database configuration used to query against trino
+        :param event: QueryEvent to be executed
+        """
         schema, data = execute_query(config, event)
         cls.construct_casefile_response(
             query_type=event.body.queryType,
@@ -73,8 +64,16 @@ class QueryOperation:
         )
 
     @classmethod
-    def construct_casefile_response(cls, query_type: str, query: str, schema: List[dict],
+    def construct_casefile_response(cls, query_type: str, query: List[str], schema: List[dict],
                                     data: List[dict], context: Context) -> None:
+        """
+        function to construct and launch a general casefile response for a table with provided values
+        :param query_type: type of query which will be executed
+        :param query: list of queries to be executed
+        :param schema: schema of the response table
+        :param data: data of the response table
+        :param context: context the response belongs to
+        """
 
         result = {
             "queryType": query_type,
@@ -87,15 +86,28 @@ class QueryOperation:
 
     @classmethod
     def run_query(cls, request: dict) -> None:
-        event = request.get("event")
-        config = request.get("config")
-        query_type = event.body.queryType
+        """
+        manager method which will trigger the right processing for a given query event based on the query type
+        :param request: key value pair of the QueryEvent and the database configuration to be used for the query
+        """
+        try:
+            event = request.get("event", None)
+            config = request.get("config", None)
 
-        for db_conf in config:
-            if db_conf.valid & (query_type == "columnQuery"):
-                cls.insert_column_names(db_conf, event)
-            elif db_conf.valid & (query_type == "sqlQuery"):
-                cls.general_query_event(db_conf, event)
+            try:
+                query_type = event.body.queryType
+
+                for db_conf in config:
+                    if db_conf.valid & (query_type == "columnQuery"):
+                        cls.insert_column_names(db_conf, event)
+                    elif db_conf.valid & (query_type == "sqlQuery"):
+                        cls.general_query_event(db_conf, event)
+
+            except AttributeError:
+                post_event("invalid_query_event", None)
+
+        except KeyError:
+            post_event("invalid_query_key", None)
 
 
 def setup_query_listeners():
