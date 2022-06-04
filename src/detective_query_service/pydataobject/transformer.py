@@ -1,6 +1,8 @@
 # import standard modules
+import logging
 from typing import Any, List
 from copy import deepcopy
+
 
 # import third party modules
 from pydantic import ValidationError
@@ -12,7 +14,9 @@ from detective_query_service.pydataobject.event_type import (
     MaskingEvent,
     QueryEvent,
     QueryBody,
-    MaskingBody
+    MaskingBody,
+    CaseFileEvent,
+    CaseFileBody
 )
 
 
@@ -46,6 +50,13 @@ class EventOperation:
         "database": "error",
         "databaseSchema": "error",
         "connectorName": "error"
+    })
+
+    ERROR_CASEFILE_OBJECT = CaseFileBody(**{
+        "queryType": "error",
+        "query": ["placeholder"],
+        "tableSchema": [{'headerName': "error", 'field': "error", 'sortable': True, 'filter': True}],
+        "tableData": [{"error": "DataFrame could not be initialized"}]
     })
 
     @classmethod
@@ -138,7 +149,25 @@ class EventOperation:
                 configs.append(DataBaseConfig(**config))
             return configs
         except AttributeError:
-            logging.error(f"InitializationError for DataBaseConfig with {config_object} in {context.dict()}")
+            logging.error(f"InitializationError for DataBaseConfig with {config_list} in {context.dict()}")
             error_return = cls.ERROR_DB_CONFIG
             error_return.valid = False
             return [error_return]
+
+    @classmethod
+    def create_casefile_event(cls, message: dict) -> CaseFileEvent:
+        try:
+            event = CaseFileEvent(
+                context=message.get("context", {}),
+                body=CaseFileBody(**message.get("body", {}))
+            )
+        except ValidationError:
+            context = message.get("context", {})
+            context.valid = False
+            event = CaseFileEvent(
+                context=context,
+                body=cls.ERROR_CASEFILE_OBJECT
+            )
+            logging.error(f"InitializationError for CaseFileEvent with {message} in {context.dict()}")
+
+        return event

@@ -2,7 +2,7 @@
 from __future__ import annotations
 import logging
 from uuid import UUID
-from typing import Optional, List
+from typing import Optional, List, Any
 
 
 # import third party modules
@@ -53,6 +53,7 @@ class QueryBody(BaseModel):
     query: List[str]
     tableId: List[str]
     executedQuery: Optional[List[str]]
+    groupId: Optional[List[str]]
     followEvent: Optional[QueryBody]
 
     @validator('queryType')
@@ -78,6 +79,14 @@ class QueryBody(BaseModel):
         return result
 
 
+class CaseFileBody(BaseModel):
+    queryType: str
+    query: List[str]
+    tableSchema: List[dict]
+    tableData: List[dict]
+    executedQuery: Optional[List[str]]
+
+
 class MaskingEvent(BaseModel):
     context: Context
     body: MaskingBody
@@ -86,3 +95,8 @@ class MaskingEvent(BaseModel):
 class QueryEvent(BaseModel):
     context: Context
     body: QueryBody
+
+
+class CaseFileEvent(BaseModel):
+    context: Context
+    body: CaseFileBody
