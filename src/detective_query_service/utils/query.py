@@ -35,6 +35,6 @@ def execute_query(config: DataBaseConfig, message: QueryEvent) -> tuple:
 
     except Exception as e:
         data = pd.DataFrame({"error": [str(e)]})
-        schema = {'headerName': "error", 'field': "error", 'sortable': True, 'filter': True}
+        schema = [{'headerName': "error", 'field': "error", 'sortable': True, 'filter': True}]
 
     return schema, data
