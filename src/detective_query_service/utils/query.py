@@ -1,11 +1,9 @@
-# import standards modules
-import os
-
 # import third party modules
 import pandas as pd
 from trino.dbapi import connect
 
 # import project related modules
+from detective_query_service.settings import TRINO_HOST, TRINO_PORT
 from detective_query_service.pydataobject.event_type import QueryEvent
 from detective_query_service.utils.response import get_column_definitions
 from detective_query_service.pydataobject.dgraph_type import DataBaseConfig
@@ -34,8 +32,8 @@ def execute_query(config: DataBaseConfig, message: QueryEvent) -> tuple:
 
     try:
         conn = connect(
-            host=os.getenv("TRINO_SERVICE_NAME"),
-            port=os.getenv("TRINO_PORT"),
+            host=TRINO_HOST,
+            port=TRINO_PORT,
             user="root",
             catalog=config.name,
             schema=config.databaseSchema
