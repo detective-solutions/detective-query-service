@@ -8,22 +8,28 @@ from dotenv import load_dotenv
 
 load_dotenv(".env")
 
+
+def read_env(variable_name: str) -> str:
+    variable = os.getenv(variable_name)
+    if (variable != "") & (variable is not None):
+        return variable
+    else:
+        raise ValueError(f"Environment Variable {variable_name} is missing")
+
+
 # set dgraph host
-DGRAPH_HOST = os.getenv("DGRAPH_SERVICE_NAME")
-DGRAPH_PORT = os.getenv("DGRAPH_PORT")
-assert (DGRAPH_HOST != "") & (DGRAPH_PORT != ""), "DGRAPH Variables not provided"
+DGRAPH_HOST = read_env("DGRAPH_SERVICE_NAME")
+DGRAPH_PORT = read_env("DGRAPH_PORT")
 DGRAPH_SERVER = f"{DGRAPH_HOST}:{DGRAPH_PORT}"
 
 # set kafka host
-KAFKA_HOST = os.getenv("KAFKA_SERVICE_NAME")
-KAFKA_PORT = os.getenv("KAFKA_PORT")
-assert (KAFKA_HOST != "") & (KAFKA_PORT != ""), "KAFKA Variables not provided"
+KAFKA_HOST = read_env("KAFKA_SERVICE_NAME")
+KAFKA_PORT = read_env("KAFKA_PORT")
 KAFKA_SERVER = f"{KAFKA_HOST}:{KAFKA_PORT}"
 
 # set trino host
-TRINO_HOST = os.getenv("TRINO_SERVICE_NAME")
-TRINO_PORT = os.getenv("TRINO_PORT")
-assert (TRINO_HOST != "") & (TRINO_PORT != ""), "TRINO Variables not provided"
+TRINO_HOST = read_env("TRINO_SERVICE_NAME")
+TRINO_PORT = read_env("TRINO_PORT")
 TRINO_SERVER = f"{TRINO_HOST}:{TRINO_PORT}"
 
 # set dgraph connection
