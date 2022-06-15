@@ -36,3 +36,34 @@ def get_source_by_table_xid(table_xid: list) -> dict:
     else:
         query_result = {"error": ["0001: query was not successful contact support"]}
     return query_result
+
+
+def get_source_by_source_xid(source_xid: str) -> dict:
+    """
+    Function to receive a database configuration in dgraph by providing a table_xid
+    :param source_xid: uid from dgraph
+    :return: returns query results in json format
+    """
+    variables = {f"$source_0": source_xid}
+    query = '''
+        query sources($source_0: string)''' + '''{
+            result(func: uid($source_0)) {
+                name: SourceConnection.name
+                host: SourceConnection.host
+                port: SourceConnection.port
+                user: SourceConnection.user
+                password: SourceConnection.password
+                database: SourceConnection.database
+                databaseSchema: SourceConnection.databaseSchema
+                connectorName: SourceConnection.connectorName
+            }
+        }
+    '''
+
+    res = execute_query(client=dgraph_client, query=query, variables=variables)
+    if type(res) == dict:
+        query_result = res
+        query_result = {"result": query_result["result"]}
+    else:
+        query_result = {"error": ["0001: query was not successful contact support"]}
+    return query_result

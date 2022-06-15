@@ -6,7 +6,7 @@ import pydgraph
 from dotenv import load_dotenv
 
 
-load_dotenv(".env")
+load_dotenv()
 
 
 def read_env(variable_name: str) -> str:
