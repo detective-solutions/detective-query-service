@@ -44,7 +44,7 @@ def get_source_by_source_xid(source_xid: str) -> dict:
     :param source_xid: uid from dgraph
     :return: returns query results in json format
     """
-    variables = {f"$source_0": source_xid}
+    variables = {"$source_0": source_xid}
     query = '''
         query sources($source_0: string)''' + '''{
             result(func: uid($source_0)) {

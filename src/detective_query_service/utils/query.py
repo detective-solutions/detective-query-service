@@ -79,5 +79,5 @@ def get_source_snapshot(config: DataBaseConfig) -> dict:
         snapshot = get_table_set(conn)
         return snapshot
     except Exception as error:
-        # post_event("snapshot_error")
         print("get_source_snapshot", error)
+        return {}
