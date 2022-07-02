@@ -1,7 +1,7 @@
 # import project related modules
 from detective_query_service.service.producer import producer
 from detective_query_service.service.event import subscribe, post_event
-from detective_query_service.pydataobject.event_type import SnapShotEvent
+from detective_query_service.pydataobject.event_type import SnapshotEvent
 from detective_query_service.pydataobject.transformer import EventOperation
 
 
@@ -45,7 +45,7 @@ class KafkaOperation:
         :param event: key value map holding {"body": type QueryBody, "context": type Context}
         """
         try:
-            snapshot = SnapShotEvent(
+            snapshot = SnapshotEvent(
                 snapType=event.get("snapType"),
                 snapShot=event.get("snapshot")
             )

@@ -115,7 +115,6 @@ class QueryOperation:
             for config in request.get("result", list()):
                 db_config = DataBaseConfig(**config)
                 snapshot = get_source_snapshot(db_config)
-                # print(snapshot)
                 post_event("kafka_version_pub", {"snapType": "initialization", "snapshot": snapshot})
         except Exception as error:
             print("run crawl", error)
