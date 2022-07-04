@@ -36,7 +36,6 @@ jobs:
           pip install tox tox-gh-actions
 
       - name: Run tests
-        continue-on-error: true # TODO: Remove when tests are fixed!
         run: tox
 
   Build-Docker-Image:
