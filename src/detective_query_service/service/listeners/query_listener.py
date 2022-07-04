@@ -6,7 +6,7 @@ from typing import List
 from detective_query_service.service.event import subscribe, post_event
 from detective_query_service.pydataobject.dgraph_type import DataBaseConfig
 from detective_query_service.pydataobject.event_type import QueryEvent, Context
-from detective_query_service.utils.query import transform_generic_to_specific_selection_query, execute_query
+from detective_query_service.utils.query import transform_generic_to_specific_selection_query, execute_query, get_source_snapshot
 
 
 class QueryOperation:
@@ -109,6 +109,17 @@ class QueryOperation:
         except KeyError:
             post_event("invalid_query_key", None)
 
+    @classmethod
+    def run_crawl(cls, request: dict) -> None:
+        try:
+            for config in request.get("result", list()):
+                db_config = DataBaseConfig(**config)
+                snapshot = get_source_snapshot(db_config)
+                post_event("kafka_version_pub", {"snapType": "initialization", "snapshot": snapshot})
+        except Exception as error:
+            print("run crawl", error)
+
 
 def setup_query_listeners():
     subscribe("query_execution", QueryOperation.run_query)
+    subscribe("source_crawl", QueryOperation.run_crawl)

@@ -50,6 +50,10 @@ def invalid_message(data: None) -> None:
     logging.error("Invalid message received by kafka")
 
 
+def source_crawl_start(data: dict) -> None:
+    logging.info(f"started source crawl for {data['event']['body']['sourceId']}")
+
+
 def setup_log_event_handlers():
     subscribe("kafka_response_error", kafka_response_error)
     subscribe("kafka_masking_response", kafka_masking_response)
@@ -59,3 +63,4 @@ def setup_log_event_handlers():
     subscribe("invalid_query_key", invalid_query_key)
     subscribe("query_execution", query_execution)
     subscribe("invalid_message", invalid_message)
+    subscribe("source_crawl", source_crawl_start)

@@ -1,3 +1,6 @@
+# import standard modules
+import uuid
+
 # import third party modules
 import pandas as pd
 from trino.dbapi import connect
@@ -47,3 +50,34 @@ def execute_query(config: DataBaseConfig, message: QueryEvent) -> tuple:
         schema = [{'headerName': "error", 'field': "error", 'sortable': True, 'filter': True}]
 
     return schema, data
+
+
+def get_table_set(conn: connect) -> dict:
+    tables = pd.read_sql("show tables", conn).Table.tolist()
+    schema = dict()
+
+    for table in tables:
+        columns = pd.read_sql(f"describe {table}", conn).to_dict("records")
+        schema[table] = [{
+            "xid": str(uuid.uuid1()),
+            "columnName": x.get("Column", ""),
+            "columnType": x.get("Type", "")
+        } for x in columns]
+
+    return schema
+
+
+def get_source_snapshot(config: DataBaseConfig) -> dict:
+    try:
+        conn = connect(
+            host=TRINO_HOST,
+            port=TRINO_PORT,
+            user="root",
+            catalog=config.name,
+            schema=config.databaseSchema
+        )
+        snapshot = get_table_set(conn)
+        return snapshot
+    except Exception as error:
+        print("get_source_snapshot", error)
+        return {}
