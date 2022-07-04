@@ -1,5 +1,5 @@
-# detective query service
+# detective Query-Service
 
-microservice api providing access to all kinds of databases 
+![Tests](https://github.com/detective-solutions/detective-query-service/actions/workflows/ci.yml/badge.svg)
 
-![Tests](https://github.com/detective-solutions/detective-query-service/actions/workflows/tests.yml/badge.svg)
+Microservice for an API that is providing access to various kinds of databases.
