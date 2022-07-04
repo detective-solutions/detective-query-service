@@ -1,4 +1,4 @@
-FROM python@sha256:1b5da60b78075e88141b5d61bbb29e0d312c1029f9932628e1ccad35ac852956
+FROM python@sha256:850b7f7626e5ca9822cc9ac36ce1f712930d8c87eb31b5937dba4037fe204034
 
 RUN apt-get update -y
 RUN apt-get install -y python3-pip python-dev unixodbc-dev
