@@ -9,7 +9,7 @@ env:
 
 jobs:
   Run-Tests:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{matrix.os}}
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -19,10 +19,10 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{matrix.python-version}}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{matrix.python-version}}
           cache: 'pip'
           cache-dependency-path: '**/requirements.txt'
 
@@ -55,7 +55,7 @@ jobs:
       - name: Create docker image metadata (name & tags based on branch name)
         id: image-metadata
         env:
-          CURRENT_BRANCH: ${{ github.ref_name }}
+          CURRENT_BRANCH: ${{github.ref_name}}
         run: |
           SERVICE_NAME=$(python setup.py --name)
           SERVICE_VERSION=$(python setup.py --version)
