@@ -93,5 +93,5 @@ jobs:
           username: ${{secrets.DOCKER_REGISTRY_USER}}
           password: ${{secrets.DOCKER_REGISTRY_TOKEN}}
 
-      - name: Push all docker available docker tags
+      - name: Push all available docker tags
         run: docker push -a ${{steps.image-metadata.outputs.image-name}}
