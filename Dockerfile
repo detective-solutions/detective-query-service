@@ -1,16 +1,27 @@
-FROM python@sha256:850b7f7626e5ca9822cc9ac36ce1f712930d8c87eb31b5937dba4037fe204034
+FROM python:3.10-slim@sha256:df9e675c0f6f0f758f7d49ea1b4e12cf7b8688d78df7d9986085fa0f24933ade
 
-RUN apt-get update -y
-RUN apt-get install -y python3-pip python-dev unixodbc-dev
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PIP_DISABLE_PIP_VERSION_CHECK 1
+ENV PIP_NO_CACHE_DIR 1
 
-# We copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt /app/requirements.txt
-COPY . /app
+# Add non-root user
+RUN groupadd detective && \
+    useradd -r --no-create-home detective -g detective
 
+# Handle folder permissions
+RUN mkdir /app && chown detective:detective /app
 WORKDIR /app
 
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install -e .
-RUN rm requirements.txt
+# Install external dependencies separately (can be cached)
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY --chown=detective:detective . .
+
+RUN pip install -e . && \
+    rm requirements.txt
+
+# Run application as non-root user
+USER detective
 
 CMD python ./src/detective_query_service/service/consumer.py
