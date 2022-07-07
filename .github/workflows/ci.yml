@@ -63,7 +63,7 @@ jobs:
             TARGET_TAGS=${BASE_TAG}
           elif [[ $CURRENT_BRANCH == 'development' ]]; then
             BASE_TAG=${IMAGE_NAME}:${SERVICE_VERSION}
-            TARGET_TAGS="${BASE_TAG},{IMAGE_NAME}:development"
+            TARGET_TAGS="${BASE_TAG},${IMAGE_NAME}:development"
           else
             # Sanitize branch name by replacing slashes with hyphens
             SANITIZED_BRANCH_NAME=${CURRENT_BRANCH//\//-}
