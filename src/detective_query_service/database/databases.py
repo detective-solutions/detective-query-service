@@ -13,9 +13,9 @@ def get_source_by_table_xid(table_xid: list) -> dict:
     outer_params = ", ".join(f"$source{i}: string" for i in range(len(table_xid)))
     variables = {f"$source{i}": s for i, s in enumerate(table_xid)}
     query = f'''
-        query tables({outer_params})''' + '''{result(func: eq(dgraph.type, "TableObject"))
-        @filter(eq(TableObject.xid, [''' + f'''{inner_params}''' + '''])) {
-                source: TableObject.dataSource {
+        query tables({outer_params})''' + '''{result(func: eq(dgraph.type, "Table"))
+        @filter(eq(Table.xid, [''' + f'''{inner_params}''' + '''])) {
+                source: Table.dataSource {
                     name: SourceConnection.name
                     host: SourceConnection.host
                     port: SourceConnection.port
