@@ -10,13 +10,13 @@ class KafkaOperation:
     @classmethod
     def create_casefile_event(cls, data: dict) -> None:
         """
-        creates and sends a kafka event to the casefile topic which holds a data frame to be visualised
+        creates and sends a kafka event to the "queries" topic which holds a data frame to be visualized
         on the client side
         :param data: key value map holding {"body": type CaseFileBody as dict, "context": type Context as dict}
         """
         try:
             event = EventOperation.create_casefile_event(data)
-            producer.send("casefile", value=event.dict())
+            producer.send("queries", value=event.dict())
             producer.flush()
         except Exception:
             post_event("kafka_response_error", data)
